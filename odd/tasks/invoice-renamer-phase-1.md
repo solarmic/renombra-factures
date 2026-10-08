@@ -53,6 +53,7 @@ Mode: strict (on) · Source: global session config ("Strict TDD Mode: enabled") 
 - [x] T4 UI: dropzone, review table, settings, image warnings, privacy notice, credit, donation, i18n, modern look. Route: delegated.
 - [x] T5 GitHub Pages workflow + README. Route: delegated.
 - [x] T6 Review follow-ups (non-blocking, from native review): visible error when ZIP export fails; destroy pdf.js loading task on open failure; validate the replacement char (must not be a forbidden char); bound the fallback year input; readability cleanups (single extension list, named scoring weights, shared splitExtension). Route: delegated (single bounded writer, 3 work-unit commits).
+- [ ] T7 Minor follow-ups from the T6 review (10 suggestions, non-blocking): dismiss control for the export error, log export errors to console, tie confidence thresholds to named constants, fix the scoring comment that overclaims penalties, i18n replacement message should not hardcode '-', tighten 3 state tests. Route: TBD.
 
 ## Acceptance criteria
 
@@ -85,3 +86,4 @@ Push / PR / Pages enablement are the author's decisions.
   - Valid but resolved by documentation instead of the suggested cleanup: R2-addFiles-proxy-lookup-unexplained (the claim holds: iterating `added` would mutate raw objects and skip the reactive proxy; now a comment explains it, the lookup is by position right after the push, and the sequential PDF read is documented as intentional).
   - Deviation: `actions/configure-pages` removed from the build job (its outputs were unused because BASE_PATH comes from the repo name, and the step needs Pages permissions that the build job no longer has). SHAs resolved from the GitHub API: checkout v4.4.0, setup-node v4.4.0, upload-pages-artifact v3.0.1, deploy-pages v4.0.5. Workflow still not executed; YAML parsed with Ruby (jobs build/deploy, permissions as intended).
   - Note: unifying the extension rule narrows planRenames from 1-8 to 1-5 alphanumerics with a letter, which does not affect any supported type (pdf, jpg, jpeg, png, heic, heif, webp, gif, tif, tiff, bmp, avif).
+- Native review of T6 (9fa5638..dbde0bc), high (deploy.yml); author granted; 4-lens review `review-74dd7e3d15b30ca1` APPROVED and acknowledged. 10 advisory findings recorded as T7. Reviewed boundary is now dbde0bc.
