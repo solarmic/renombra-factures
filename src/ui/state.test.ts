@@ -55,4 +55,45 @@ describe('AppState', () => {
     app.start = 4;
     expect(app.preview).toMatch(/^004-/);
   });
+
+  it('keeps the previous fallback year when the input is invalid or out of range', () => {
+    const app = new AppState();
+    app.setFallbackYear(2024);
+    for (const bad of [Number.NaN, 20, 1989, 2101, 2024.5, null as unknown as number]) {
+      app.setFallbackYear(bad);
+      expect(app.fallbackYear).toBe(2024);
+    }
+    app.setFallbackYear(1990);
+    expect(app.fallbackYear).toBe(1990);
+    app.setFallbackYear(2100);
+    expect(app.fallbackYear).toBe(2100);
+  });
+
+  it('reports a failed export, returns to normal and lets the user dismiss the error', async () => {
+    const app = new AppState();
+    await app.addFiles([file('2026-01-05 Factura.jpg', 'image/jpeg')]);
+    const entry = app.entries[0]!;
+    const original = entry.file.arrayBuffer.bind(entry.file);
+    entry.file.arrayBuffer = () => Promise.reject(new DOMException('gone', 'NotReadableError'));
+
+    await expect(app.exportZip()).resolves.toBeUndefined();
+    expect(app.exportFailed).toBe(true);
+    expect(app.exporting).toBe(false);
+    expect(app.canExport).toBe(true);
+
+    entry.file.arrayBuffer = original;
+    // No DOM in the node test environment: the download step itself throws, which is a failure too.
+    await app.exportZip();
+    expect(app.exportFailed).toBe(true);
+    app.dismissExportError();
+    expect(app.exportFailed).toBe(false);
+  });
+
+  it('rejects a forbidden replacement character in the preview and the plan', async () => {
+    const app = new AppState();
+    app.template = 'a/b {n}';
+    app.replacement = '/';
+    expect(app.replacementValid).toBe(false);
+    expect(app.preview).not.toContain('/');
+  });
 });

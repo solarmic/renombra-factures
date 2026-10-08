@@ -39,4 +39,23 @@ describe('extractTextFromPdf', () => {
     expect(first).toMatch(/^FECHA {2,}14-06-2026$/);
     expect(second).toBe('Total 10,00');
   });
+
+  it('destroys the loading task when the document fails to open', async () => {
+    let destroyed = 0;
+    const lib: PdfJsLike = {
+      getDocument: () => ({
+        promise: Promise.reject(new Error('PasswordException')),
+        destroy: async () => {
+          destroyed++;
+        },
+      }),
+    };
+    await expect(extractTextFromPdf(lib, new Uint8Array([1, 2, 3]))).rejects.toThrow('PasswordException');
+    expect(destroyed).toBe(1);
+  });
+
+  it('rejects a malformed PDF with the real library', async () => {
+    const lib = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as unknown as PdfJsLike;
+    await expect(extractTextFromPdf(lib, new TextEncoder().encode('not a pdf'))).rejects.toThrow();
+  });
 });

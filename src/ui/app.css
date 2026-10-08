@@ -530,6 +530,12 @@ label {
   flex: 1 1 260px;
 }
 
+.small.warn {
+  color: var(--warn);
+  font-weight: 600;
+  margin: 4px 0 0;
+}
+
 .export-msg.warn {
   color: var(--warn);
   font-weight: 600;

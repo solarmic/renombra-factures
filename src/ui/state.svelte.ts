@@ -6,7 +6,7 @@ import { extractDateFromFilename } from '../domain/extractDateFromFilename';
 import { extractDateFromText } from '../domain/extractDateFromText';
 import { planRenames } from '../domain/planRenames';
 import { renderTemplate } from '../domain/renderTemplate';
-import { sanitizeFilename } from '../domain/sanitizeFilename';
+import { isValidReplacement, sanitizeFilename } from '../domain/sanitizeFilename';
 import type { YMD } from '../domain/types';
 import { detectLanguage, dictionaries, type Lang } from './i18n';
 
@@ -33,6 +33,9 @@ export interface Row {
 
 let nextId = 1;
 
+export const MIN_FALLBACK_YEAR = 1990;
+export const MAX_FALLBACK_YEAR = 2100;
+
 export class AppState {
   lang = $state<Lang>(
     detectLanguage(typeof navigator === 'undefined' ? undefined : (navigator.languages ?? navigator.language)),
@@ -44,6 +47,8 @@ export class AppState {
   entries = $state<Entry[]>([]);
   ignored = $state<string[]>([]);
   exporting = $state(false);
+  /** The last export attempt failed (unreadable source file, memory, download step). */
+  exportFailed = $state(false);
 
   t = $derived(dictionaries[this.lang]);
   hasImages = $derived(this.entries.some((e) => e.kind === 'image'));
@@ -67,6 +72,13 @@ export class AppState {
       { template: this.template, start: this.safeStart, replacement: this.replacement },
     ),
   );
+
+  replacementValid = $derived(isValidReplacement(this.replacement));
+
+  /** Accepts only whole years in the supported range; anything else keeps the previous value. */
+  setFallbackYear(year: number): void {
+    if (Number.isInteger(year) && year >= MIN_FALLBACK_YEAR && year <= MAX_FALLBACK_YEAR) this.fallbackYear = year;
+  }
 
   get safeStart(): number {
     return Number.isFinite(this.start) ? Math.max(0, Math.trunc(this.start)) : DEFAULTS.start;
@@ -166,6 +178,7 @@ export class AppState {
   async exportZip(): Promise<void> {
     if (!this.canExport) return;
     this.exporting = true;
+    this.exportFailed = false;
     try {
       const blob = await buildZip(
         await Promise.all(
@@ -180,9 +193,15 @@ export class AppState {
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch {
+      this.exportFailed = true;
     } finally {
       this.exporting = false;
     }
+  }
+
+  dismissExportError(): void {
+    this.exportFailed = false;
   }
 }
 

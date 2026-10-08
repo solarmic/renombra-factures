@@ -1,14 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeFilename } from './sanitizeFilename';
+import { isValidReplacement, sanitizeFilename } from './sanitizeFilename';
 
 describe('sanitizeFilename', () => {
   it('replaces forbidden characters with the default dash', () => {
     expect(sanitizeFilename('1/26V:07 a\\b*c?d"e<f>g|h')).toBe('1-26V-07 a-b-c-d-e-f-g-h');
   });
 
-  it('uses a custom replacement, including an empty one', () => {
+  it('uses a custom replacement', () => {
     expect(sanitizeFilename('a/b', '_')).toBe('a_b');
-    expect(sanitizeFilename('a/b', '')).toBe('ab');
+    expect(sanitizeFilename('a/b', '_x')).toBe('a_xb');
+  });
+
+  it('falls back to a dash when the replacement is empty or itself forbidden', () => {
+    for (const bad of ['', '/', '\\', ':', '*', '?', '"', '<', '>', '|', 'a/', '\u0007']) {
+      expect(sanitizeFilename('a/b', bad)).toBe('a-b');
+      expect(isValidReplacement(bad)).toBe(false);
+    }
+    expect(isValidReplacement('_')).toBe(true);
   });
 
   it('replaces control characters', () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { app } from './state.svelte';
+  import { app, MAX_FALLBACK_YEAR, MIN_FALLBACK_YEAR } from './state.svelte';
 
   let templateInput: HTMLInputElement;
 
@@ -51,11 +51,14 @@
     </div>
     <div class="field">
       <label for="replacement">{app.t.replacementLabel}</label>
-      <input id="replacement" class="input mono" type="text" maxlength="2" bind:value={app.replacement} autocomplete="off" />
+      <input id="replacement" class="input mono" type="text" maxlength="2" bind:value={app.replacement} autocomplete="off" aria-invalid={!app.replacementValid} aria-describedby={app.replacementValid ? undefined : 'replacement-help'} />
+      {#if !app.replacementValid}
+        <p class="small warn" id="replacement-help" role="alert">{app.t.replacementInvalid}</p>
+      {/if}
     </div>
     <div class="field">
       <label for="year">{app.t.yearLabel}</label>
-      <input id="year" class="input" type="number" min="2000" max="2100" step="1" bind:value={app.fallbackYear} />
+      <input id="year" class="input" type="number" min={MIN_FALLBACK_YEAR} max={MAX_FALLBACK_YEAR} step="1" value={app.fallbackYear} oninput={(e) => app.setFallbackYear(e.currentTarget.valueAsNumber)} onblur={(e) => (e.currentTarget.value = String(app.fallbackYear))} />
     </div>
   </div>
 

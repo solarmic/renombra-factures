@@ -69,6 +69,9 @@ const es = {
       : `Faltan las fechas de ${n} archivos. Complétalas o excluye los archivos para poder descargar.`,
   readyCount: (n: number) => (n === 1 ? '1 archivo listo para descargar' : `${n} archivos listos para descargar`),
   nothingToExport: 'Añade al menos un archivo con fecha.',
+  exportError:
+    'No se pudo generar el ZIP. Comprueba que los archivos no se hayan movido o modificado y vuelve a intentarlo.',
+  replacementInvalid: 'Este carácter no es válido en nombres de archivo. Se usará "-".',
   donate: 'Invítame a un café',
   donateHint: 'Gratis y sin anuncios. Si te ha ahorrado tiempo, puedes apoyarlo.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,
@@ -139,6 +142,9 @@ const ca: Dict = {
       : `Falten les dates de ${n} arxius. Completa-les o exclou els arxius per poder descarregar.`,
   readyCount: (n: number) => (n === 1 ? '1 arxiu a punt per descarregar' : `${n} arxius a punt per descarregar`),
   nothingToExport: 'Afegeix almenys un arxiu amb data.',
+  exportError:
+    'No s\'ha pogut generar el ZIP. Comprova que els arxius no s\'hagin mogut o modificat i torna-ho a provar.',
+  replacementInvalid: 'Aquest caràcter no és vàlid en noms d\'arxiu. S\'usarà "-".',
   donate: 'Convida\'m a un cafè',
   donateHint: 'Gratuït i sense anuncis. Si t\'ha estalviat temps, pots donar-li suport.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,
@@ -207,6 +213,9 @@ const en: Dict = {
       : `${n} files are missing their dates. Fill them in or exclude the files to enable the download.`,
   readyCount: (n: number) => (n === 1 ? '1 file ready to download' : `${n} files ready to download`),
   nothingToExport: 'Add at least one file with a date.',
+  exportError:
+    'The ZIP could not be built. Check that the files have not been moved or modified, then try again.',
+  replacementInvalid: 'This character is not valid in file names. "-" will be used instead.',
   donate: 'Buy me a coffee',
   donateHint: 'Free and ad-free. If it saved you time, you can support it.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,

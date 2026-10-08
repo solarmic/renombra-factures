@@ -17,8 +17,8 @@ function isTextItem(value: unknown): value is TextItem {
 
 export async function extractTextFromPdf(lib: PdfJsLike, data: Uint8Array, maxPages = 2): Promise<string> {
   const task = lib.getDocument({ data, isEvalSupported: false });
-  const doc = await task.promise;
   try {
+    const doc = await task.promise;
     const pages: string[] = [];
     for (let n = 1; n <= Math.min(doc.numPages, maxPages); n++) {
       const page = await doc.getPage(n);
