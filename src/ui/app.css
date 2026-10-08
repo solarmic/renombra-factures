@@ -115,7 +115,13 @@ body::before {
     radial-gradient(40% 35% at 18% 12%, var(--glow-a), transparent 70%),
     radial-gradient(45% 40% at 82% 8%, var(--glow-b), transparent 70%),
     radial-gradient(40% 35% at 60% 90%, var(--glow-c), transparent 70%);
-  animation: aurora 24s ease-in-out infinite alternate;
+}
+
+/* The aurora repaints every blurred glass panel each frame, so animate it only on desktop-class screens. */
+@media (hover: hover) and (pointer: fine) and (min-width: 721px) {
+  body::before {
+    animation: aurora 24s ease-in-out infinite alternate;
+  }
 }
 
 body::after {
@@ -250,14 +256,20 @@ h1 {
   line-height: 1;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  background: linear-gradient(95deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
   color: var(--g2);
   filter: drop-shadow(0 0 18px var(--glow-b));
   padding: 0.04em 0.1em 0.08em 0;
   overflow-wrap: anywhere;
+}
+
+/* Gradient fill only where text clipping works; otherwise the title keeps its solid color. */
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  h1 {
+    background: linear-gradient(95deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .tagline {
