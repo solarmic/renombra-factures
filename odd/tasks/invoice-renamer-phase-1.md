@@ -48,7 +48,7 @@ Mode: strict (on) · Source: global session config ("Strict TDD Mode: enabled") 
 ## Tasks
 
 - [x] T1 Scaffold Vite + Svelte 5 + TS + Vitest; `npm run build`, `npm test` green. Route: delegated (writer, 2+ files).
-- [ ] T2 Domain: date extraction from text and filename, numbering template, sanitization, ordering. Route: delegated.
+- [x] T2 Domain: date extraction from text and filename, numbering template, sanitization, ordering. Route: delegated.
 - [ ] T3 Adapters: PDF text extraction, file classification, ZIP export. Route: delegated.
 - [ ] T4 UI: dropzone, review table, settings, image warnings, privacy notice, credit, donation, i18n, modern look. Route: delegated.
 - [ ] T5 GitHub Pages workflow + README. Route: delegated.
@@ -72,3 +72,5 @@ Push / PR / Pages enablement are the author's decisions.
 
 - 2026-10-08: repo initialized (`2428b7a`), branch `feat/phase-1-renamer`.
 - T1 done: Vite 8 + Svelte 5 + TS 5 + Vitest 5 scaffold. Checks: `npx vitest run` 1 passed (toolchain smoke), `npm run build` ok, `npm run check` 0 errors. Commit: see git log (`chore: scaffold ...`).
+- T2 done (route: inline writer, single bounded writer agent). RED/GREEN evidence: `extractDateFromFilename.test.ts` RED = suite failed to load (module missing), GREEN = 12/12; `sanitizeFilename`/`renderTemplate`/`planRenames` tests RED = 3 files failed to load (12 existing passed), GREEN = 32/32 total; `extractDateFromText.test.ts` RED = suite failed to load, GREEN = 18/19 then 19/19 after fixing a wrong test expectation (05/13/2026 is a valid mm/dd), later +4 synthetic tests from the real-data harness (label-cell-above, spaced separators, issue-vs-operation date, document-vs-order date) = 55/55. Acceptance test `1/{yy}V/{n:2} {name}` start 7 -> `1-26V-07 Gener 05012026 Orange.pdf` present in `planRenames.test.ts`. Commits: `2d4055a` (filename/template/sanitize/plan), text extractor commit follows in git log.
+- Real-data harness (not committed, no invoices copied): 68 PDFs (1:26V:01..69 minus the .xlsx), 37 correct, 16 mismatches, 15 null (all image-only PDFs with empty text -> filename fallback). All 16 mismatches judged expectation errors: 11 BSM (name uses operation date, invoice prints issue date +1 day), #16 (name = due date), #38 (name = order date), #46 (printed issue date 2026-09-26 vs name 2606), #62 (printed issue 03/09 vs name 1009), #68 (printed invoice 30/09 vs name 2909 = due/paid date).
