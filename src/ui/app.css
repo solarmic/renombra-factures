@@ -295,9 +295,8 @@ h1 {
   }
 }
 
-/* Angled corner accent on HUD panels. */
-.card::after,
-.dropzone::after {
+/* Angled corner accent on solid HUD panels (not on the dashed dropzone). */
+.card::after {
   content: '';
   position: absolute;
   top: -1px;
