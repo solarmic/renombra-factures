@@ -4,15 +4,15 @@
 </script>
 
 <div class="lang" role="group" aria-label={app.t.language}>
-  {#each LANGS as l (l.code)}
+  {#each LANGS as l (l)}
     <button
       type="button"
       class="lang-btn"
-      aria-pressed={app.lang === l.code}
-      lang={l.code}
-      onclick={() => app.setLang(l.code)}
+      aria-pressed={app.lang === l}
+      lang={l}
+      onclick={() => app.setLang(l)}
     >
-      {l.code.toUpperCase()}
+      {l.toUpperCase()}
     </button>
   {/each}
 </div>

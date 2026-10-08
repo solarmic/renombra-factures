@@ -1,11 +1,7 @@
 import { AUTHOR } from '../config';
 
 export type Lang = 'es' | 'ca' | 'en';
-export const LANGS: readonly { code: Lang; label: string }[] = [
-  { code: 'es', label: 'Español' },
-  { code: 'ca', label: 'Català' },
-  { code: 'en', label: 'English' },
-];
+export const LANGS: readonly Lang[] = ['es', 'ca', 'en'];
 
 const es = {
   tagline: 'Numera y renombra tus facturas por fecha, sin subirlas a ningún sitio.',

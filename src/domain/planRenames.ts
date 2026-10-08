@@ -1,3 +1,4 @@
+import { splitExtension } from './fileName';
 import { renderTemplate } from './renderTemplate';
 import { sanitizeFilename } from './sanitizeFilename';
 import { compareYMD, type YMD } from './types';
@@ -30,11 +31,6 @@ export interface RenamePlan<T extends PlanItem> {
   skipped: SkippedItem<T>[];
   /** Included items that still lack a date (they block export). */
   missingDate: number;
-}
-
-export function splitExtension(fileName: string): { base: string; ext: string } {
-  const match = /^(.+?)(\.[A-Za-z0-9]{1,8})$/.exec(fileName);
-  return match ? { base: match[1]!, ext: match[2]! } : { base: fileName, ext: '' };
 }
 
 const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });

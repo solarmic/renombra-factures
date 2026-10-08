@@ -1,3 +1,4 @@
+import { splitExtension } from './fileName';
 import { isValidYMD, type YMD } from './types';
 
 export interface FilenameDate {
@@ -5,8 +6,6 @@ export interface FilenameDate {
   /** `full` carries a year in the name; `day-month` borrowed the fallback year. */
   precision: 'full' | 'day-month';
 }
-
-const EXTENSION = /\.(?=[A-Za-z0-9]{1,5}$)[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*$/;
 
 function expandYear(yy: number): number {
   return 2000 + yy;
@@ -22,8 +21,9 @@ interface Match {
   precision: FilenameDate['precision'];
 }
 
-function firstValid(matches: Match[]): Match | undefined {
-  return matches.sort((a, b) => a.index - b.index)[0];
+/** The match that appears earliest in the name (the list is already filtered to valid dates). */
+function earliest(matches: Match[]): Match | undefined {
+  return matches.reduce<Match | undefined>((best, m) => (!best || m.index < best.index ? m : best), undefined);
 }
 
 function collect(
@@ -40,8 +40,24 @@ function collect(
   return out;
 }
 
+/** Digit runs of exactly `length` characters, turned into matches by `build` (null = not a date). */
+function fromRuns(
+  runs: { text: string; index: number }[],
+  length: number,
+  build: (digits: string) => YMD | null,
+  precision: Match['precision'],
+): Match[] {
+  const out: Match[] = [];
+  for (const run of runs) {
+    if (run.text.length !== length) continue;
+    const date = build(run.text);
+    if (date) out.push({ index: run.index, date, precision });
+  }
+  return out;
+}
+
 export function extractDateFromFilename(name: string, fallbackYear: number): FilenameDate | null {
-  const base = name.replace(EXTENSION, '');
+  const { base } = splitExtension(name);
 
   const ok = (date: YMD) => (plausible(date, fallbackYear) ? date : null);
 
@@ -66,45 +82,41 @@ export function extractDateFromFilename(name: string, fallbackYear: number): Fil
       'full',
     ),
   ];
-  const sep = firstValid(separated);
+  const sep = earliest(separated);
   if (sep) return { date: sep.date, precision: sep.precision };
 
   const runs = [...base.matchAll(/\d+/g)].map((m) => ({ text: m[0], index: m.index ?? 0 }));
 
-  const eight = runs
-    .filter((r) => r.text.length === 8)
-    .map((r): Match | null => {
-      const t = r.text;
-      const dmy = ok({ y: +t.slice(4), m: +t.slice(2, 4), d: +t.slice(0, 2) });
-      const ymd = ok({ y: +t.slice(0, 4), m: +t.slice(4, 6), d: +t.slice(6) });
-      const date = dmy ?? ymd;
-      return date ? { index: r.index, date, precision: 'full' } : null;
-    })
-    .filter((m): m is Match => m !== null);
-  const e = firstValid(eight);
-  if (e) return { date: e.date, precision: 'full' };
+  // Unseparated digit runs, from the most to the least specific length.
+  const eight = earliest(
+    fromRuns(
+      runs,
+      8,
+      (t) =>
+        ok({ y: +t.slice(4), m: +t.slice(2, 4), d: +t.slice(0, 2) }) ?? // DDMMYYYY
+        ok({ y: +t.slice(0, 4), m: +t.slice(4, 6), d: +t.slice(6) }), //   YYYYMMDD
+      'full',
+    ),
+  );
+  if (eight) return { date: eight.date, precision: eight.precision };
 
-  const six = runs
-    .filter((r) => r.text.length === 6)
-    .map((r): Match | null => {
-      const t = r.text;
-      const date = ok({ y: expandYear(+t.slice(4)), m: +t.slice(2, 4), d: +t.slice(0, 2) });
-      return date ? { index: r.index, date, precision: 'full' } : null;
-    })
-    .filter((m): m is Match => m !== null);
-  const s = firstValid(six);
-  if (s) return { date: s.date, precision: 'full' };
+  const six = earliest(
+    fromRuns(runs, 6, (t) => ok({ y: expandYear(+t.slice(4)), m: +t.slice(2, 4), d: +t.slice(0, 2) }), 'full'), // DDMMYY
+  );
+  if (six) return { date: six.date, precision: six.precision };
 
-  const four = runs
-    .filter((r) => r.text.length === 4)
-    .map((r): Match | null => {
-      const t = r.text;
-      const date = { y: fallbackYear, m: +t.slice(2), d: +t.slice(0, 2) };
-      return isValidYMD(date) ? { index: r.index, date, precision: 'day-month' } : null;
-    })
-    .filter((m): m is Match => m !== null);
-  const f = firstValid(four);
-  if (f) return { date: f.date, precision: 'day-month' };
+  const four = earliest(
+    fromRuns(
+      runs,
+      4,
+      (t) => {
+        const date = { y: fallbackYear, m: +t.slice(2), d: +t.slice(0, 2) }; // DDMM, year borrowed
+        return isValidYMD(date) ? date : null;
+      },
+      'day-month',
+    ),
+  );
+  if (four) return { date: four.date, precision: four.precision };
 
   return null;
 }

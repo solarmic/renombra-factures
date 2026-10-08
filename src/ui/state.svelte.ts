@@ -3,6 +3,7 @@ import { extractPdfText } from '../adapters/pdfText';
 import { buildZip } from '../adapters/zipExport';
 import { DEFAULTS, ZIP_FILE_NAME } from '../config';
 import { extractDateFromFilename } from '../domain/extractDateFromFilename';
+import { splitExtension } from '../domain/fileName';
 import { extractDateFromText } from '../domain/extractDateFromText';
 import { planRenames } from '../domain/planRenames';
 import { renderTemplate } from '../domain/renderTemplate';
@@ -109,14 +110,13 @@ export class AppState {
     const date = first ? this.resolve(first.item.entry).date : null;
     const sample: YMD = date ?? { y: new Date().getFullYear(), m: 1, d: 5 };
     const name = first ? first.item.name : this.t.sampleName;
-    const base = name.replace(/\.[A-Za-z0-9]{1,8}$/, '');
-    const ext = /\.[A-Za-z0-9]{1,8}$/.exec(name)?.[0] ?? '';
+    const { base, ext } = splitExtension(name);
     return sanitizeFilename(renderTemplate(this.template, { n: this.safeStart, date: sample, name: base }), this.replacement) + ext;
   });
 
   setLang(lang: Lang): void {
+    // <html lang> is kept in sync by the $effect in App.svelte.
     this.lang = lang;
-    document.documentElement.lang = lang;
   }
 
   async addFiles(files: Iterable<File>): Promise<void> {
@@ -142,8 +142,13 @@ export class AppState {
     this.ignored = [...this.ignored, ...ignored];
     this.entries.push(...added);
 
-    for (const entry of this.entries.filter((e) => added.some((a) => a.id === e.id) && e.kind === 'pdf')) {
-      await this.readPdf(entry);
+    // Read through this.entries, not `added`: pushing into the $state array wraps each entry in a reactive
+    // proxy, and only mutations made through the proxy update the UI. Looking them up by position right
+    // after the synchronous push is safe even if another drop arrives while PDFs are being read.
+    const tracked = this.entries.slice(this.entries.length - added.length);
+    // PDFs are read one at a time on purpose: it bounds memory use and worker load on large batches.
+    for (const entry of tracked) {
+      if (entry.kind === 'pdf') await this.readPdf(entry);
     }
   }
 
