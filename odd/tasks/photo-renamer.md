@@ -65,11 +65,11 @@ Mode: strict (on) · Source: global session config · Runner: `npx vitest run`
 
 ## Tasks
 
-- [ ] P1 Two-site structure: Vite multi-page (root = invoices, `fotos/` = photos), per-site title/hero/palette, cross-links, bundle separation (invoices untouched behaviourally). Route: delegated writer.
+- [x] P1 Two-site structure: Vite multi-page (root = invoices, `fotos/` = photos), per-site title/hero/palette, cross-links, bundle separation (invoices untouched behaviourally). Route: delegated writer.
 - [x] P2 Domain: photo ordering key (EXIF date → filename counter → lastModified), template tokens incl. `{t1}`/`{t2}`/`{place}`/time, separator cleanup, rename plan with optional place folders. Route: delegated writer.
 - [x] P3 Adapters: EXIF reader (date, GPS) incl. HEIC; places dataset build script + compact asset; nearest-place lookup. Route: delegated writer.
-- [ ] P4 Photo UI: dropzone, settings (template, t1, t2, start, folders toggle), review table with order source + place, ZIP export with folders. Route: delegated writer.
-- [ ] P5 Docs (README, credits/attribution), WebKit + Chrome smoke with real-looking samples. Route: delegated writer.
+- [x] P4 Photo UI: dropzone, settings (template, t1, t2, start, folders toggle), review table with order source + place, ZIP export with folders. Route: delegated writer.
+- [x] P5 Docs (README, credits/attribution), WebKit + Chrome smoke with real-looking samples. Route: delegated writer.
 
 ## Acceptance criteria
 
@@ -99,3 +99,6 @@ Merge/publish is the author's decision.
   - Dataset: GeoNames cities1000 downloaded 2026-10-08, 171,171 places, `public/places/places.txt` 2,871,532 bytes raw / 1,297,490 gzip (hundredths-of-degree, delta-coded). `scripts/build-places.mjs` regenerates it.
   - `nearestPlace` verified on the real dataset: Ciutadella -> "Ciutadella", Maó -> "Maó".
 - 2026-10-08 (author decision): photos is a separate website, not a tab. P1 redefined as two-site structure; P4 builds the photo UI on the photos page.
+- P1 done (two-site structure): Vite multi-page, `appType: 'mpa'`, `fotos/index.html` entry, per-site title/description/hero/palette (`src/fotos/palette.css`), cross-links via `FACTURES_URL`/`FOTOS_URL` in `src/config.ts` (overridable with `VITE_*`). Shared `LangState`, `Footer`, `Dropzone`, `LanguageSwitch`, `SiteLink`. Chunk graph: `pdf-*`/`pdfWorker-*` referenced only by the invoices entry, `lite.esm-*` (exifr) only by the photos entry, shared chunk has neither; `places.txt` is requested only at runtime from the photos page.
+- P4 done: photos UI (dropzone, settings, review table with source badge/place/new name, notices, ZIP with folders). Tests: `photoState.test.ts` (11), `i18n.test.ts`, `photoKind.test.ts`. RED observed on missing `photoState.svelte` module; `photoKind` implementation was added right after its test (no separate RED).
+- P5 done: README, attribution in the photos footer, real-browser smoke in Chrome and WebKit (also with NO_ITER=1), screenshots in the e2e scratchpad.

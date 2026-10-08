@@ -135,6 +135,7 @@ h1 {
 
 .table .path-folder {
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .grid-4 {

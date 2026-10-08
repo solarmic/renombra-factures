@@ -7,6 +7,8 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
   plugins: [svelte()],
+  // Multi-page: unknown paths must not fall back to the invoices page (also keeps dev/preview on /fotos/ correct).
+  appType: 'mpa',
   build: {
     rollupOptions: {
       input: {
