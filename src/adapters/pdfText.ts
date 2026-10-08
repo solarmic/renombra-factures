@@ -1,10 +1,11 @@
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+// Legacy build: bundles polyfills (Map.getOrInsertComputed, iterator helpers...) that Safari lacks.
+import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import { cachedLoader } from './cachedLoader';
 import { extractTextFromPdf, type PdfJsLike } from './pdfTextCore';
 
 /** pdf.js is loaded lazily; its worker ships inside the site bundle (no CDN, works offline). */
 const loadLib = cachedLoader(() =>
-  import('pdfjs-dist').then((lib) => {
+  import('pdfjs-dist/legacy/build/pdf.mjs').then((lib) => {
     lib.GlobalWorkerOptions.workerSrc = workerUrl;
     return lib as unknown as PdfJsLike;
   }),
