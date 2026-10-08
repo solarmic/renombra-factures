@@ -69,6 +69,19 @@ describe('PhotoState', () => {
     expect(state.rows.map((r) => r.newName)).toEqual(['01_Maó.jpg', '02_Ciutadella.jpg']);
   });
 
+  it('blocks export while the places dataset is still loading', async () => {
+    let finish: (index: ReturnType<typeof buildPlaceIndex>) => void = () => {};
+    const { state } = setup({ loadPlaces: () => new Promise((resolve) => (finish = resolve)) });
+    state.template = '{n:2}_{place}';
+    const adding = state.addFiles([file('ciu.jpg')]);
+    await vi.waitFor(() => expect(state.placesStatus).toBe('loading'));
+    expect(state.canExport).toBe(false);
+    finish(buildPlaceIndex([{ name: 'Ciutadella', lat: 40.001, lon: 3.838 }]));
+    await adding;
+    expect(state.canExport).toBe(true);
+    expect(state.rows[0]?.newName).toBe('01_Ciutadella.jpg');
+  });
+
   it('does not fetch when no photo has GPS', async () => {
     const { state, deps } = setup();
     state.groupByPlace = true;

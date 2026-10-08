@@ -126,7 +126,8 @@ export class PhotoState {
   reading = $derived(this.entries.some((e) => e.status === 'reading'));
   pendingCount = $derived(this.entries.filter((e) => e.status === 'reading').length);
   dropMode = $derived(dropModeOf(this.entries.length, this.pendingCount));
-  canExport = $derived(this.readyCount > 0 && !this.reading && !this.exporting);
+  // Exporting while the places dataset loads would silently drop {place} names and place folders.
+  canExport = $derived(this.readyCount > 0 && !this.reading && !this.exporting && this.placesStatus !== 'loading');
 
   /** Photos ordered by name counter or file date because they carry no capture moment. */
   undatedCount = $derived(this.rows.filter((r) => r.entry.status === 'done' && r.key.tier !== 0).length);
