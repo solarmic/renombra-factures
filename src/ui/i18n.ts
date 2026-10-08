@@ -4,6 +4,7 @@ export type Lang = 'es' | 'ca' | 'en';
 export const LANGS: readonly Lang[] = ['es', 'ca', 'en'];
 
 const es = {
+  eyebrow: 'Gratis · Privado · En tu navegador',
   tagline: 'Numera y renombra tus facturas por fecha, sin subirlas a ningún sitio.',
   language: 'Idioma',
   privacyTitle: 'Tus archivos no salen de tu dispositivo',
@@ -77,6 +78,7 @@ const es = {
 export type Dict = typeof es;
 
 const ca: Dict = {
+  eyebrow: 'Gratuït · Privat · Al teu navegador',
   tagline: 'Numera i reanomena les teves factures per data, sense pujar-les enlloc.',
   language: 'Idioma',
   privacyTitle: 'Els teus arxius no surten del teu dispositiu',
@@ -148,6 +150,7 @@ const ca: Dict = {
 };
 
 const en: Dict = {
+  eyebrow: 'Free · Private · In your browser',
   tagline: 'Number and rename your invoices by date, without uploading them anywhere.',
   language: 'Language',
   privacyTitle: 'Your files never leave your device',

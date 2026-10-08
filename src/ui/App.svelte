@@ -3,6 +3,7 @@
   import Dropzone from './Dropzone.svelte';
   import ExportBar from './ExportBar.svelte';
   import Footer from './Footer.svelte';
+  import HeroEmblem from './HeroEmblem.svelte';
   import LanguageSwitch from './LanguageSwitch.svelte';
   import Notices from './Notices.svelte';
   import ReviewTable from './ReviewTable.svelte';
@@ -15,12 +16,18 @@
 </script>
 
 <div class="page">
-  <header class="header">
-    <div>
-      <h1>{APP_NAME}</h1>
-      <p class="tagline">{app.t.tagline}</p>
+  <header class="hero">
+    <div class="hero-top">
+      <p class="eyebrow">{app.t.eyebrow}</p>
+      <LanguageSwitch />
     </div>
-    <LanguageSwitch />
+    <div class="hero-body">
+      <HeroEmblem />
+      <div class="hero-text">
+        <h1>{APP_NAME}</h1>
+        <p class="tagline">{app.t.tagline}</p>
+      </div>
+    </div>
   </header>
 
   <main class="stack">

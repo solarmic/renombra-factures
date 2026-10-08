@@ -79,6 +79,10 @@ For a custom domain or a user site served from `/`, build without `BASE_PATH`.
 Edit `src/config.ts` to change the app name, author or donation link
 (`DONATION_URL` is a placeholder to be confirmed).
 
+## Credits
+
+Headings, buttons and badges use [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) (SIL Open Font License 1.1), bundled locally through `@fontsource/chakra-petch`; no font is loaded from an external server.
+
 ## License
 
 Copyright (c) miguelcirc. License to be defined by the author.
