@@ -1,0 +1,4 @@
+Place data: GeoNames (https://www.geonames.org/), licensed CC BY 4.0.
+Source: https://download.geonames.org/export/dump/cities1000.zip
+Downloaded: 2026-10-08
+Places: 171171 (min population 0)
