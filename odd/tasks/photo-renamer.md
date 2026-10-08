@@ -1,11 +1,11 @@
-# Feature: Photo renamer tab
+# Feature: Photo renamer (separate site)
 
 Locator: `odd/tasks/photo-renamer.md` · Engram mirror: `odd/photo-renamer/tasks`
 Branch: `feat/photo-renamer` (cut from `feat/game-ui` at `176306a`).
 
 ## Objective
 
-Second tab in the same app: the user drops photos, the app orders them by capture
+Second site (own page) from the same repo: the user drops photos, the app orders them by capture
 time, renames them with a user-defined template (order number, one or two free title
 fields, date, place) and exports a ZIP, optionally grouped into folders by place.
 Everything stays in the browser.
@@ -18,13 +18,15 @@ ZIP export and privacy model to reuse.
 
 ## Scope (authorized)
 
-- Tabs: "Facturas" | "Fotos" (i18n es/ca/en), keyboard-accessible tablist, last tab
-  remembered in localStorage (try/catch). Each tab has its own hero title and palette,
-  same modern game aesthetic (Chakra Petch, gradient title, HUD panels):
-  - Invoices: current title and cyan → violet → magenta palette.
-  - Photos: title "Ordena y renombra tus fotos" (ca "Ordena i reanomena les teves fotos",
-    en "Sort and rename your photos"), a distinct palette (e.g. warm sunset: amber →
-    coral → rose, or lime → teal), AA contrast in light and dark.
+- Two independent sites from one repo (replaces the earlier "tab" idea): the invoices app stays at the
+  root page, the photo renamer is a second Vite entry (`fotos/index.html`). Each has its own title,
+  description, hero title, palette and bundle (photos must not load pdf.js, invoices must not load exifr
+  or the places dataset). They link to each other from the footer/header; URLs come from `src/config.ts`
+  (base-aware relative defaults, overridable with `VITE_FACTURES_URL` / `VITE_FOTOS_URL`).
+  Rationale: separate audiences and identity, shared code without duplication, a future custom domain with
+  subdomains (factures.<domain> / fotos.<domain>), and the photos site may later move to Cloudflare Pages.
+  Photos hero: "Ordena y renombra tus fotos" (ca "Ordena i reanomena les teves fotos", en "Sort and rename
+  your photos"), warm sunset palette (amber -> coral -> rose), AA contrast in light and dark.
 - Photo input: jpg, jpeg, png, heic/heif, webp, tiff, gif. Files are never modified or
   re-encoded; only renamed (bytes copied as-is into the ZIP).
 - Ordering key per photo, in this priority: EXIF DateTimeOriginal (with sub-seconds /
@@ -63,7 +65,7 @@ Mode: strict (on) · Source: global session config · Runner: `npx vitest run`
 
 ## Tasks
 
-- [ ] P1 Tabs + per-tab hero title and palette (invoices untouched behaviourally). Route: delegated writer.
+- [ ] P1 Two-site structure: Vite multi-page (root = invoices, `fotos/` = photos), per-site title/hero/palette, cross-links, bundle separation (invoices untouched behaviourally). Route: delegated writer.
 - [x] P2 Domain: photo ordering key (EXIF date → filename counter → lastModified), template tokens incl. `{t1}`/`{t2}`/`{place}`/time, separator cleanup, rename plan with optional place folders. Route: delegated writer.
 - [x] P3 Adapters: EXIF reader (date, GPS) incl. HEIC; places dataset build script + compact asset; nearest-place lookup. Route: delegated writer.
 - [ ] P4 Photo UI: dropzone, settings (template, t1, t2, start, folders toggle), review table with order source + place, ZIP export with folders. Route: delegated writer.
@@ -78,7 +80,7 @@ Mode: strict (on) · Source: global session config · Runner: `npx vitest run`
   ZIP groups it under `Ciutadella/` when grouping is on.
 - No network request carries file content or coordinates; the dataset is only fetched
   from the site itself and only when needed.
-- `npm test`, `npm run check`, `npm run build` pass; invoices tab still works in Safari-like WebKit.
+- `npm test`, `npm run check`, `npm run build` pass; invoices site still works in Safari-like WebKit.
 
 ## Delivery
 
@@ -96,3 +98,4 @@ Merge/publish is the author's decision.
   - exifr 7.1.3 lite bundle (JPEG+HEIC verified with synthetic fixtures made with exiftool/sips); `pick` option is broken in lite so the adapter parses with section flags and reads `latitude`/`longitude`. TIFF/PNG EXIF is not read (full bundle only); such files fall back to name/file date.
   - Dataset: GeoNames cities1000 downloaded 2026-10-08, 171,171 places, `public/places/places.txt` 2,871,532 bytes raw / 1,297,490 gzip (hundredths-of-degree, delta-coded). `scripts/build-places.mjs` regenerates it.
   - `nearestPlace` verified on the real dataset: Ciutadella -> "Ciutadella", Maó -> "Maó".
+- 2026-10-08 (author decision): photos is a separate website, not a tab. P1 redefined as two-site structure; P4 builds the photo UI on the photos page.
