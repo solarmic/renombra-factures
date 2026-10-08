@@ -18,6 +18,8 @@ export interface Entry {
   file: File;
   kind: Exclude<FileKind, 'unsupported'>;
   status: 'reading' | 'done' | 'error';
+  /** Technical reason when status is 'error', shown so users can report it. */
+  errorDetail?: string;
   /** PDF had no extractable text (probably a scan). */
   noText: boolean;
   contentDate: YMD | null;
@@ -158,7 +160,9 @@ export class AppState {
       entry.noText = text.trim() === '';
       entry.contentDate = extractDateFromText(text)?.date ?? null;
       entry.status = 'done';
-    } catch {
+    } catch (error) {
+      console.error(`Could not read ${entry.file.name}`, error);
+      entry.errorDetail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
       entry.status = 'error';
     }
   }

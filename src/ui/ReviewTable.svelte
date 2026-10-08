@@ -68,6 +68,7 @@
                 </div>
                 {#if e.status === 'error'}
                   <p class="small hint">{app.t.readError}</p>
+                  {#if e.errorDetail}<p class="small hint error-detail">{e.errorDetail}</p>{/if}
                 {:else if e.noText && !row.date}
                   <p class="small hint">{app.t.scannedPdf}</p>
                 {/if}
