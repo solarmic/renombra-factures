@@ -102,3 +102,14 @@ Merge/publish is the author's decision.
 - P1 done (two-site structure): Vite multi-page, `appType: 'mpa'`, `fotos/index.html` entry, per-site title/description/hero/palette (`src/fotos/palette.css`), cross-links via `FACTURES_URL`/`FOTOS_URL` in `src/config.ts` (overridable with `VITE_*`). Shared `LangState`, `Footer`, `Dropzone`, `LanguageSwitch`, `SiteLink`. Chunk graph: `pdf-*`/`pdfWorker-*` referenced only by the invoices entry, `lite.esm-*` (exifr) only by the photos entry, shared chunk has neither; `places.txt` is requested only at runtime from the photos page.
 - P4 done: photos UI (dropzone, settings, review table with source badge/place/new name, notices, ZIP with folders). Tests: `photoState.test.ts` (11), `i18n.test.ts`, `photoKind.test.ts`. RED observed on missing `photoState.svelte` module; `photoKind` implementation was added right after its test (no separate RED).
 - P5 done: README, attribution in the photos footer, real-browser smoke in Chrome and WebKit (also with NO_ITER=1), screenshots in the e2e scratchpad.
+- 2026-10-08 delivery: history split so the generated dataset is its own commit (71ff777). Native reviews, all granted by the author:
+  slice 1 (31b7d62..a34abcf) APPROVED and acknowledged; slice 2 (dataset only) stopped with `lens_context_budget_exceeded`
+  (generated data, not reviewable; covered by parser rejection tests and the Ciutadella/Maó checks); slice 3 (71ff777..8fa461d)
+  APPROVED and acknowledged. Review fixes: 8fa461d (reject corrupt places data, surface EXIF loader failure, stream cancel
+  assertion), 201c71a (block export while places load). A first slice-1 attempt (lineage review-8547dfce87bbfd13) found
+  that the split broke tests at an intermediate commit; history was reordered (data before code) and that lineage is left
+  unacknowledged.
+- Published 2026-10-08: main = 201c71a. Invoices at /renombra-factures/ and photos at /renombra-factures/fotos/. Verified live
+  in Safari-like WebKit (NO_ITER): invoice PDF read; photos ordered, places resolved, only same-origin requests.
+- Follow-ups: WhatsApp names carry only the day but sort as exact 00:00 moments (R3 warning); EXIF in TIFF/WebP/PNG
+  needs the full exifr bundle; automated test for the pdf.js worker wiring; remember language across sites; custom domain.
