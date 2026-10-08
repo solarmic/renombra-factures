@@ -1,6 +1,7 @@
 import { splitExtension } from './fileName';
 import { renderTemplate } from './renderTemplate';
 import { sanitizeFilename } from './sanitizeFilename';
+import { uniqueName } from './uniqueName';
 import { compareYMD, type YMD } from './types';
 
 export interface PlanItem {
@@ -55,11 +56,7 @@ export function planRenames<T extends PlanItem>(items: readonly T[], options: Pl
     const { base, ext } = splitExtension(item.name);
     const stem = sanitizeFilename(renderTemplate(options.template, { n, date, name: base }), options.replacement);
 
-    let newName = stem + ext;
-    for (let attempt = 2; used.has(newName.toLowerCase()); attempt++) {
-      newName = `${stem} (${attempt})${ext}`;
-    }
-    used.add(newName.toLowerCase());
+    const newName = uniqueName(used, stem, ext);
     return { item, n, newName };
   });
 

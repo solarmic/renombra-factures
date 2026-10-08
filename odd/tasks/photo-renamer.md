@@ -64,7 +64,7 @@ Mode: strict (on) · Source: global session config · Runner: `npx vitest run`
 ## Tasks
 
 - [ ] P1 Tabs + per-tab hero title and palette (invoices untouched behaviourally). Route: delegated writer.
-- [ ] P2 Domain: photo ordering key (EXIF date → filename counter → lastModified), template tokens incl. `{t1}`/`{t2}`/`{place}`/time, separator cleanup, rename plan with optional place folders. Route: delegated writer.
+- [x] P2 Domain: photo ordering key (EXIF date → filename counter → lastModified), template tokens incl. `{t1}`/`{t2}`/`{place}`/time, separator cleanup, rename plan with optional place folders. Route: delegated writer.
 - [ ] P3 Adapters: EXIF reader (date, GPS) incl. HEIC; places dataset build script + compact asset; nearest-place lookup. Route: delegated writer.
 - [ ] P4 Photo UI: dropzone, settings (template, t1, t2, start, folders toggle), review table with order source + place, ZIP export with folders. Route: delegated writer.
 - [ ] P5 Docs (README, credits/attribution), WebKit + Chrome smoke with real-looking samples. Route: delegated writer.
@@ -88,3 +88,7 @@ Merge/publish is the author's decision.
 ## Progress
 
 - 2026-10-08: branch created, feature document written.
+- 2026-10-08 (coordinator order change): P2 and P3 first; P1 (tabs) and P4 (UI) on hold until the author decides tab vs separate page.
+- P2 done. RED: 5 new test files failed on missing modules (105 passed / 5 failed files) -> GREEN: `npx vitest run` 21 files, 144 tests. Route: delegated writer.
+  - New domain: `renderTokens` (shared engine, separator cleanup around empty tokens), `uniqueName`, `photoTime` (EXIF parse, wall-clock moments), `photoNameKey` (PXL_/date names, WhatsApp, camera counters), `photoSortKey` (+ `comparePhotoKeys`), `planPhotos` (global numbering, optional place folders). `renderTemplate`/`planRenames` now use the shared pieces; ZIP entries accept `folder`.
+  - Mixed-source ordering rule: tier 0 exact moment (EXIF, or datetime in name) by time; tier 1 counter-only by counter; tier 2 file date only. Wall-clock time, EXIF offset ignored.

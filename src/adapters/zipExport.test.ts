@@ -18,3 +18,15 @@ describe('buildZip', () => {
     expect(blob.type).toBe('application/zip');
   });
 });
+
+describe('buildZip folders', () => {
+  it('places entries under their folder', async () => {
+    const blob = await buildZip([
+      { name: 'a.jpg', folder: 'Ciutadella', data: new Uint8Array([1]) },
+      { name: 'b.jpg', data: new Uint8Array([2]) },
+    ]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    expect(Object.keys(zip.files).sort()).toEqual(['Ciutadella/', 'Ciutadella/a.jpg', 'b.jpg']);
+    expect([...(await zip.file('Ciutadella/a.jpg')!.async('uint8array'))]).toEqual([1]);
+  });
+});
