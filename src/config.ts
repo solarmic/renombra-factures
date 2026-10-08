@@ -1,7 +1,6 @@
 export const APP_NAME = 'Renombra Factures';
 export const AUTHOR = 'miguelcirc';
 
-// TODO(author): confirm the final donation URL before publishing.
 export const DONATION_URL = 'https://ko-fi.com/miguelcirc';
 
 export const DEFAULTS = {
