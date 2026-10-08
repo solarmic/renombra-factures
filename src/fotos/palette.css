@@ -64,14 +64,63 @@
   }
 }
 
-/* Hero: two deliberate lines; the second sits inside a camera drawn with CSS (sizes in em follow the title). */
+/* Hero: line 1, then possessive + a camera around the noun.
+   WebKit paints nothing for `background-clip: text` text that sits in a descendant with its own layer
+   (filter, transform...), so the gradient lives on each text span (.grad) and no filter touches them;
+   the glow is a separate pseudo-element behind the title. */
 h1.photo-title {
+  position: relative;
+  isolation: isolate;
   font-size: clamp(1.45rem, 0.4rem + 4.9vw, 3.6rem);
   line-height: 1.05;
   overflow-wrap: normal;
+  background: none;
+  filter: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentcolor;
+  color: var(--g2);
+}
+
+h1.photo-title::before {
+  content: '';
+  position: absolute;
+  inset: -0.2em -0.4em;
+  z-index: -1;
+  background: radial-gradient(closest-side at 40% 50%, var(--glow-b), transparent);
+  pointer-events: none;
+}
+
+.grad {
+  color: var(--g2);
+  padding-right: 0.12em;
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .grad {
+    background: linear-gradient(95deg, var(--g1) 0%, var(--g2) 55%, var(--g3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .title-line {
+  display: block;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.3em;
+  row-gap: 0.45em;
+  margin-top: 0.5em;
+}
+
+.title-poss {
   display: block;
   white-space: nowrap;
 }
@@ -82,11 +131,11 @@ h1.photo-title {
   display: inline-flex;
   align-items: center;
   gap: 0.28em;
-  margin-top: 0.5em;
   padding: 0.2em 0.68em 0.24em 0.28em;
   border-radius: 0.34em;
   max-width: 100%;
   white-space: nowrap;
+  box-shadow: 0 0 0.5em var(--glow-b);
 }
 
 /* Gradient outline with a transparent inside: a masked border-box layer. */
@@ -104,15 +153,11 @@ h1.photo-title {
   pointer-events: none;
 }
 
-.camera {
-  filter: drop-shadow(0 0 0.35em var(--glow-b));
-}
-
 .cam-hump {
   position: absolute;
-  left: 14%;
+  left: 20%;
   top: -0.3em;
-  width: 22%;
+  width: 30%;
   height: 0.42em;
   border-radius: 0.22em 0.22em 0 0;
 }
@@ -123,7 +168,7 @@ h1.photo-title {
 
 .cam-shutter {
   position: absolute;
-  right: 12%;
+  right: 14%;
   top: -0.17em;
   width: 0.5em;
   height: 0.17em;
@@ -168,7 +213,6 @@ h1.photo-title {
 
 .cam-text {
   display: block;
-  text-align: center;
   padding-top: 0.04em;
 }
 

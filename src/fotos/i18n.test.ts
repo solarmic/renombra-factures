@@ -8,8 +8,8 @@ describe('photos dictionaries', () => {
     expect(keys('en')).toEqual(keys('es'));
   });
 
-  it('use the agreed hero titles, split over two lines', () => {
-    const full = (l: keyof typeof fotosDictionaries) => `${fotosDictionaries[l].heroLine1} ${fotosDictionaries[l].heroLine2}`;
+  it('use the agreed hero titles, split into line, possessive and noun', () => {
+    const full = (l: keyof typeof fotosDictionaries) => `${fotosDictionaries[l].heroLine1} ${fotosDictionaries[l].heroPossessive} ${fotosDictionaries[l].heroNoun}`;
     expect(full('es')).toBe('Ordena y renombra tus fotos');
     expect(full('ca')).toBe('Ordena i reanomena les teves fotos');
     expect(full('en')).toBe('Sort and rename your photos');

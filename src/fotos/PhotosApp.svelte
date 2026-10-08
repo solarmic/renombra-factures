@@ -33,13 +33,16 @@
     </div>
     <div class="hero-text">
       <h1 class="photo-title">
-        <span class="title-line">{photos.t.heroLine1}</span>
-        <span class="camera">
-          <span class="cam-hump" aria-hidden="true"></span>
-          <span class="cam-shutter" aria-hidden="true"></span>
-          <span class="cam-flash" aria-hidden="true"></span>
-          <span class="cam-lens" aria-hidden="true"></span>
-          <span class="cam-text">{photos.t.heroLine2}</span>
+        <span class="title-line grad">{photos.t.heroLine1}</span>
+        <span class="title-row">
+          <span class="title-poss grad">{photos.t.heroPossessive}</span>
+          <span class="camera">
+            <span class="cam-hump" aria-hidden="true"></span>
+            <span class="cam-shutter" aria-hidden="true"></span>
+            <span class="cam-flash" aria-hidden="true"></span>
+            <span class="cam-lens" aria-hidden="true"></span>
+            <span class="cam-text grad">{photos.t.heroNoun}</span>
+          </span>
         </span>
       </h1>
       <p class="tagline">{photos.t.tagline}</p>
