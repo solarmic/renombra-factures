@@ -1,16 +1,18 @@
 <script lang="ts">
   import { LANGS } from './i18n';
-  import { app } from './state.svelte';
+  import { langState } from './lang.svelte';
+
+  let { label }: { label: string } = $props();
 </script>
 
-<div class="lang" role="group" aria-label={app.t.language}>
+<div class="lang" role="group" aria-label={label}>
   {#each LANGS as l (l)}
     <button
       type="button"
       class="lang-btn"
-      aria-pressed={app.lang === l}
+      aria-pressed={langState.lang === l}
       lang={l}
-      onclick={() => app.setLang(l)}
+      onclick={() => langState.setLang(l)}
     >
       {l.toUpperCase()}
     </button>

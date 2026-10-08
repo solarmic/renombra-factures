@@ -7,6 +7,8 @@ const es = {
   eyebrow: 'Gratis · Privado · En tu navegador',
   tagline: 'Numera y renombra tus facturas por fecha, sin subirlas a ningún sitio.',
   language: 'Idioma',
+  otherSiteLead: '¿Fotos?',
+  otherSiteLabel: 'Ordena tus fotos',
   privacyTitle: 'Tus archivos no salen de tu dispositivo',
   privacyBody:
     'Todo se procesa en tu navegador. No se sube ni se guarda nada, y al cerrar la pestaña todo se borra.',
@@ -81,6 +83,8 @@ const ca: Dict = {
   eyebrow: 'Gratuït · Privat · Al teu navegador',
   tagline: 'Numera i reanomena les teves factures per data, sense pujar-les enlloc.',
   language: 'Idioma',
+  otherSiteLead: 'Fotos?',
+  otherSiteLabel: 'Ordena les teves fotos',
   privacyTitle: 'Els teus arxius no surten del teu dispositiu',
   privacyBody:
     'Tot es processa al teu navegador. No es puja ni es desa res, i en tancar la pestanya tot s\'esborra.',
@@ -153,6 +157,8 @@ const en: Dict = {
   eyebrow: 'Free · Private · In your browser',
   tagline: 'Number and rename your invoices by date, without uploading them anywhere.',
   language: 'Language',
+  otherSiteLead: 'Photos?',
+  otherSiteLabel: 'Sort your photos',
   privacyTitle: 'Your files never leave your device',
   privacyBody:
     'Everything is processed in your browser. Nothing is uploaded or stored, and closing the tab erases everything.',

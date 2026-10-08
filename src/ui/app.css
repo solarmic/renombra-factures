@@ -890,3 +890,36 @@ label {
     transform: none !important;
   }
 }
+
+/* Header tools and cross-site link */
+.hero-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.site-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--text);
+  padding: 6px 4px;
+  min-height: 36px;
+  align-items: center;
+}
+
+.site-link-go {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+}
+
+.site-link:hover .site-link-go {
+  border-bottom-color: currentcolor;
+}

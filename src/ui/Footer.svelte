@@ -1,16 +1,22 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { DONATION_URL } from '../config';
-  import { app } from './state.svelte';
 
-  const year = new Date().getFullYear();
+  let {
+    credit,
+    hint,
+    donate,
+    extra,
+  }: { credit: string; hint: string; donate: string; extra?: Snippet } = $props();
 </script>
 
 <footer class="footer">
   <div>
-    <p class="muted">{app.t.credit(year)}</p>
-    <p class="muted small">{app.t.donateHint}</p>
+    <p class="muted">{credit}</p>
+    <p class="muted small">{hint}</p>
+    {#if extra}{@render extra()}{/if}
   </div>
   <a class="btn btn-coffee" href={DONATION_URL} target="_blank" rel="noopener noreferrer">
-    <span aria-hidden="true">☕</span> {app.t.donate}
+    <span aria-hidden="true">☕</span> {donate}
   </a>
 </footer>

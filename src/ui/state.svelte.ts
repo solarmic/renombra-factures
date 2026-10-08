@@ -9,7 +9,8 @@ import { planRenames } from '../domain/planRenames';
 import { renderTemplate } from '../domain/renderTemplate';
 import { isValidReplacement, sanitizeFilename } from '../domain/sanitizeFilename';
 import type { YMD } from '../domain/types';
-import { detectLanguage, dictionaries, type Lang } from './i18n';
+import { dictionaries, type Lang } from './i18n';
+import { langState } from './lang.svelte';
 
 export type DateSource = 'content' | 'filename' | 'manual';
 
@@ -40,9 +41,9 @@ export const MIN_FALLBACK_YEAR = 1990;
 export const MAX_FALLBACK_YEAR = 2100;
 
 export class AppState {
-  lang = $state<Lang>(
-    detectLanguage(typeof navigator === 'undefined' ? undefined : (navigator.languages ?? navigator.language)),
-  );
+  get lang(): Lang {
+    return langState.lang;
+  }
   template = $state<string>(DEFAULTS.template);
   start = $state<number>(DEFAULTS.start);
   replacement = $state<string>(DEFAULTS.replacement);
@@ -118,7 +119,7 @@ export class AppState {
 
   setLang(lang: Lang): void {
     // <html lang> is kept in sync by the $effect in App.svelte.
-    this.lang = lang;
+    langState.setLang(lang);
   }
 
   async addFiles(files: Iterable<File>): Promise<void> {
