@@ -64,10 +64,119 @@
   }
 }
 
-/* The title is long, so it is a little smaller than the invoices one. */
-h1 {
-  font-size: clamp(1.9rem, 0.9rem + 4.6vw, 3.5rem);
+/* Hero: two deliberate lines; the second sits inside a camera drawn with CSS (sizes in em follow the title). */
+h1.photo-title {
+  font-size: clamp(1.45rem, 0.4rem + 4.9vw, 3.6rem);
   line-height: 1.05;
+  overflow-wrap: normal;
+}
+
+.title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.camera {
+  --stroke: 0.07em;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+  margin-top: 0.5em;
+  padding: 0.2em 0.68em 0.24em 0.28em;
+  border-radius: 0.34em;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+/* Gradient outline with a transparent inside: a masked border-box layer. */
+.camera::before,
+.cam-hump::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--stroke);
+  background: linear-gradient(95deg, var(--g1), var(--g2) 55%, var(--g3));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.camera {
+  filter: drop-shadow(0 0 0.35em var(--glow-b));
+}
+
+.cam-hump {
+  position: absolute;
+  left: 14%;
+  top: -0.3em;
+  width: 22%;
+  height: 0.42em;
+  border-radius: 0.22em 0.22em 0 0;
+}
+
+.cam-hump::before {
+  padding: var(--stroke) var(--stroke) 0;
+}
+
+.cam-shutter {
+  position: absolute;
+  right: 12%;
+  top: -0.17em;
+  width: 0.5em;
+  height: 0.17em;
+  border-radius: 0.09em 0.09em 0 0;
+  background: linear-gradient(95deg, var(--g2), var(--g3));
+}
+
+.cam-flash {
+  position: absolute;
+  right: 0.2em;
+  top: 0.17em;
+  width: 0.2em;
+  height: 0.2em;
+  border-radius: 50%;
+  background: var(--g1);
+  box-shadow: 0 0 0.3em var(--g1);
+}
+
+.cam-lens {
+  position: relative;
+  flex: none;
+  width: 0.92em;
+  height: 0.92em;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, #fff 0 0.05em, transparent 0.06em),
+    radial-gradient(circle, var(--bg) 0 28%, var(--g3) 30% 36%, var(--bg) 38% 52%, transparent 54%),
+    linear-gradient(135deg, var(--g1), var(--g2) 55%, var(--g3));
+  -webkit-text-fill-color: initial;
+  animation: lens-glint 4.5s ease-in-out 1s 2;
+}
+
+@keyframes lens-glint {
+  0%,
+  100% {
+    filter: none;
+  }
+  50% {
+    filter: drop-shadow(0 0 0.25em var(--g1)) brightness(1.25);
+  }
+}
+
+.cam-text {
+  display: block;
+  text-align: center;
+  padding-top: 0.04em;
+}
+
+@media (max-width: 420px) {
+  .camera {
+    gap: 0.2em;
+    padding-inline: 0.18em 0.55em;
+  }
 }
 
 .opt-row {

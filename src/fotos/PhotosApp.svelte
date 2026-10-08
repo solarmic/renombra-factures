@@ -4,7 +4,6 @@
   import Footer from '../ui/Footer.svelte';
   import LanguageSwitch from '../ui/LanguageSwitch.svelte';
   import SiteLink from '../ui/SiteLink.svelte';
-  import HeroEmblem from './HeroEmblem.svelte';
   import PhotoExportBar from './PhotoExportBar.svelte';
   import PhotoNotices from './PhotoNotices.svelte';
   import PhotoSettings from './PhotoSettings.svelte';
@@ -32,12 +31,18 @@
         <LanguageSwitch label={photos.t.language} />
       </div>
     </div>
-    <div class="hero-body">
-      <HeroEmblem />
-      <div class="hero-text">
-        <h1>{photos.t.heroTitle}</h1>
-        <p class="tagline">{photos.t.tagline}</p>
-      </div>
+    <div class="hero-text">
+      <h1 class="photo-title">
+        <span class="title-line">{photos.t.heroLine1}</span>
+        <span class="camera">
+          <span class="cam-hump" aria-hidden="true"></span>
+          <span class="cam-shutter" aria-hidden="true"></span>
+          <span class="cam-flash" aria-hidden="true"></span>
+          <span class="cam-lens" aria-hidden="true"></span>
+          <span class="cam-text">{photos.t.heroLine2}</span>
+        </span>
+      </h1>
+      <p class="tagline">{photos.t.tagline}</p>
     </div>
   </header>
 

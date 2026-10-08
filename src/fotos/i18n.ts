@@ -4,7 +4,8 @@ import type { Lang } from '../ui/i18n';
 const es = {
   documentTitle: 'Renombra Fotos · Ordena y renombra tus fotos',
   eyebrow: 'Gratis · Privado · En tu navegador',
-  heroTitle: 'Ordena y renombra tus fotos',
+  heroLine1: 'Ordena y renombra',
+  heroLine2: 'tus fotos',
   tagline: 'Ordena por fecha de captura, renombra con tu plantilla y descarga un ZIP, sin subir nada.',
   language: 'Idioma',
   otherSiteLead: '¿Facturas?',
@@ -94,7 +95,8 @@ export type FotosDict = typeof es;
 const ca: FotosDict = {
   documentTitle: 'Renombra Fotos · Ordena i reanomena les teves fotos',
   eyebrow: 'Gratuït · Privat · Al teu navegador',
-  heroTitle: 'Ordena i reanomena les teves fotos',
+  heroLine1: 'Ordena i reanomena',
+  heroLine2: 'les teves fotos',
   tagline: 'Ordena per data de captura, reanomena amb la teva plantilla i descarrega un ZIP, sense pujar res.',
   language: 'Idioma',
   otherSiteLead: 'Factures?',
@@ -182,7 +184,8 @@ const ca: FotosDict = {
 const en: FotosDict = {
   documentTitle: 'Renombra Fotos · Sort and rename your photos',
   eyebrow: 'Free · Private · In your browser',
-  heroTitle: 'Sort and rename your photos',
+  heroLine1: 'Sort and rename',
+  heroLine2: 'your photos',
   tagline: 'Sort by capture date, rename with your own template and download a ZIP, without uploading anything.',
   language: 'Language',
   otherSiteLead: 'Invoices?',
