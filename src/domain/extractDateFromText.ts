@@ -164,9 +164,12 @@ function labelAbove(folded: string, index: number): string {
     text: m[0],
   }));
   if (cells.length === 1) return cells[0]!.text;
+  // Proportional fonts shift columns slightly, so pick the label whose start is nearest.
   let chosen: (typeof cells)[number] | undefined;
-  for (const cell of cells) if (cell.start <= col + 2) chosen = cell;
-  return chosen && col <= chosen.end + 15 ? chosen.text : '';
+  for (const cell of cells) {
+    if (!chosen || Math.abs(cell.start - col) < Math.abs(chosen.start - col)) chosen = cell;
+  }
+  return chosen && Math.abs(chosen.start - col) <= 20 ? chosen.text : '';
 }
 
 function lineAfter(folded: string, end: number): string {

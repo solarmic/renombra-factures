@@ -135,3 +135,13 @@ describe('layout handling', () => {
     expect(dateOf(text)).toEqual({ y: 2026, m: 6, d: 15 });
   });
 });
+
+describe('slightly misaligned columns', () => {
+  it('matches a value to the nearest label even when the column is shifted left', () => {
+    const text = [
+      'Nº pedido                                Fecha apertura                           Fecha prevista de entrega',
+      '0034826001882                         09/07/2026                              10/07/2026 18:10h',
+    ].join('\n');
+    expect(dateOf(text)).toEqual({ y: 2026, m: 7, d: 9 });
+  });
+});
