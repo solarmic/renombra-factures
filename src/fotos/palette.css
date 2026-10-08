@@ -1,0 +1,156 @@
+/* Photos site palette: warm sunset (amber, coral, rose). Loaded after app.css so it overrides its tokens.
+   Every text/background pair is checked at WCAG AA (4.5:1 text, 3:1 large text and UI) in both schemes. */
+:root {
+  --bg: #fff4e8;
+  --surface: #ffffff;
+  --glass: rgb(255 255 255 / 78%);
+  --surface-2: #fde6d3;
+  --text: #2b1510;
+  --muted: #6a4538;
+  --border: #efc9ae;
+  --field: #a8604a;
+  --edge: rgb(190 80 20 / 35%);
+  --accent: #b8410a;
+  --accent-hover: #8f2f04;
+  --on-accent: #ffffff;
+  --g1: #b45309;
+  --g2: #d03a1c;
+  --g3: #be123c;
+  --btn-1: #b45309;
+  --btn-2: #c2410c;
+  --btn-3: #be123c;
+  --info: #9a3412;
+  --info-bg: #ffe6d2;
+  --warn: #7c4a00;
+  --warn-bg: #fff0d6;
+  --focus: #1d4ed8;
+  --glow-a: rgb(251 191 36 / 34%);
+  --glow-b: rgb(251 113 71 / 32%);
+  --glow-c: rgb(244 63 94 / 24%);
+  --grid: rgb(190 80 20 / 7%);
+  --shadow: 0 1px 2px rgb(120 50 20 / 8%), 0 10px 30px rgb(160 70 30 / 12%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #140a07;
+    --surface: #1f1210;
+    --glass: rgb(34 20 17 / 66%);
+    --surface-2: #2e1b16;
+    --text: #fff0e8;
+    --muted: #d8b8aa;
+    --border: #4a2b22;
+    --field: #b9806c;
+    --edge: rgb(255 160 100 / 38%);
+    --accent: #fdba74;
+    --accent-hover: #fed7aa;
+    --on-accent: #140a07;
+    --g1: #fbbf24;
+    --g2: #ff8a65;
+    --g3: #fb7185;
+    --btn-1: #fbbf24;
+    --btn-2: #fb923c;
+    --btn-3: #fb7185;
+    --info: #fdba74;
+    --info-bg: #3a1d12;
+    --focus: #7dd3fc;
+    --glow-a: rgb(251 191 36 / 22%);
+    --glow-b: rgb(251 113 71 / 28%);
+    --glow-c: rgb(244 63 94 / 20%);
+    --grid: rgb(255 170 120 / 7%);
+    --emblem-fill: #1f1210;
+    --emblem-ink: #140a07;
+    --shadow: 0 1px 2px rgb(0 0 0 / 50%), 0 12px 32px rgb(0 0 0 / 40%);
+  }
+}
+
+/* The title is long, so it is a little smaller than the invoices one. */
+h1 {
+  font-size: clamp(1.9rem, 0.9rem + 4.6vw, 3.5rem);
+  line-height: 1.05;
+}
+
+.opt-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.opt-row input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--btn-2);
+  flex: none;
+}
+
+.thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--edge);
+  background: var(--surface-2);
+  display: block;
+}
+
+.thumb-blank {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  border: 1px dashed var(--edge);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-family: var(--display);
+}
+
+.badge-exif {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge-name {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.badge-file {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.when {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.table .path-folder {
+  color: var(--muted);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 720px) {
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .thumb,
+  .thumb-blank {
+    width: 64px;
+    height: 64px;
+  }
+}
