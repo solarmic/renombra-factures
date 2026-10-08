@@ -46,6 +46,19 @@ replacement (default `-`).
 Default template `1/{yy}V/{n:2} {name}` with start `7` turns
 `Gener 05012026 Orange.pdf` (dated 2026-01-05) into `1-26V-07 Gener 05012026 Orange.pdf`.
 
+## Place data (photos)
+
+Photo place names come from an offline dataset, `public/places/places.txt`, built once from
+[GeoNames](https://www.geonames.org/) `cities1000` (CC BY 4.0, downloaded 2026-10-08, 171,171 places;
+2.9 MB raw, about 1.3 MB gzipped). Nothing is looked up online: the file is served by this same site and
+fetched only when a template uses `{place}` or place folders are on, then the nearest place within 30 km
+of the photo's GPS position is found in the browser. To refresh it run `node scripts/build-places.mjs`
+(Node 22.18 or newer; the only network access of the project, at build time).
+
+Capture time and GPS are read from EXIF with [exifr](https://github.com/MikeKovarik/exifr) (MIT, lite
+bundle: JPEG and HEIC), loaded on the first photo. Files without readable EXIF fall back to a
+datetime or counter in the file name, then to the file date.
+
 ## Local development
 
 ```sh
@@ -82,6 +95,8 @@ Edit `src/config.ts` to change the app name, author or donation link
 ## Credits
 
 Headings, buttons and badges use [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) (SIL Open Font License 1.1), bundled locally through `@fontsource/chakra-petch`; no font is loaded from an external server.
+
+Place data: [GeoNames](https://www.geonames.org/) (CC BY 4.0). EXIF reading: [exifr](https://github.com/MikeKovarik/exifr) (MIT).
 
 ## License
 

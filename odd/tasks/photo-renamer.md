@@ -65,7 +65,7 @@ Mode: strict (on) · Source: global session config · Runner: `npx vitest run`
 
 - [ ] P1 Tabs + per-tab hero title and palette (invoices untouched behaviourally). Route: delegated writer.
 - [x] P2 Domain: photo ordering key (EXIF date → filename counter → lastModified), template tokens incl. `{t1}`/`{t2}`/`{place}`/time, separator cleanup, rename plan with optional place folders. Route: delegated writer.
-- [ ] P3 Adapters: EXIF reader (date, GPS) incl. HEIC; places dataset build script + compact asset; nearest-place lookup. Route: delegated writer.
+- [x] P3 Adapters: EXIF reader (date, GPS) incl. HEIC; places dataset build script + compact asset; nearest-place lookup. Route: delegated writer.
 - [ ] P4 Photo UI: dropzone, settings (template, t1, t2, start, folders toggle), review table with order source + place, ZIP export with folders. Route: delegated writer.
 - [ ] P5 Docs (README, credits/attribution), WebKit + Chrome smoke with real-looking samples. Route: delegated writer.
 
@@ -92,3 +92,7 @@ Merge/publish is the author's decision.
 - P2 done. RED: 5 new test files failed on missing modules (105 passed / 5 failed files) -> GREEN: `npx vitest run` 21 files, 144 tests. Route: delegated writer.
   - New domain: `renderTokens` (shared engine, separator cleanup around empty tokens), `uniqueName`, `photoTime` (EXIF parse, wall-clock moments), `photoNameKey` (PXL_/date names, WhatsApp, camera counters), `photoSortKey` (+ `comparePhotoKeys`), `planPhotos` (global numbering, optional place folders). `renderTemplate`/`planRenames` now use the shared pieces; ZIP entries accept `folder`.
   - Mixed-source ordering rule: tier 0 exact moment (EXIF, or datetime in name) by time; tier 1 counter-only by counter; tier 2 file date only. Wall-clock time, EXIF offset ignored.
+- P3 done. RED: `places.test.ts` (7 tests) and `exifReader.test.ts` failed on missing modules, then the compact-format tests failed 4/10 before `encodePlaces`/`parsePlaces` were rewritten -> GREEN `npx vitest run` 24 files, 162 tests. `placesLoader.test.ts` was written together with its implementation (no separate RED observed). Route: delegated writer.
+  - exifr 7.1.3 lite bundle (JPEG+HEIC verified with synthetic fixtures made with exiftool/sips); `pick` option is broken in lite so the adapter parses with section flags and reads `latitude`/`longitude`. TIFF/PNG EXIF is not read (full bundle only); such files fall back to name/file date.
+  - Dataset: GeoNames cities1000 downloaded 2026-10-08, 171,171 places, `public/places/places.txt` 2,871,532 bytes raw / 1,297,490 gzip (hundredths-of-degree, delta-coded). `scripts/build-places.mjs` regenerates it.
+  - `nearestPlace` verified on the real dataset: Ciutadella -> "Ciutadella", Maó -> "Maó".
