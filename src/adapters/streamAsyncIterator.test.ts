@@ -5,6 +5,7 @@ import { installStreamAsyncIterator } from './streamAsyncIterator';
 function fakeStreamClass() {
   class FakeStream {
     released = false;
+    cancelled = false;
     constructor(private readonly chunks: number[]) {}
     getReader() {
       const chunks = [...this.chunks];
@@ -13,7 +14,9 @@ function fakeStreamClass() {
         releaseLock: () => {
           this.released = true;
         },
-        cancel: async () => {},
+        cancel: async () => {
+          this.cancelled = true;
+        },
       };
     }
   }
@@ -37,6 +40,15 @@ describe('installStreamAsyncIterator', () => {
     const stream = new FakeStream([1, 2, 3]);
     for await (const chunk of stream as unknown as AsyncIterable<number>) if (chunk === 1) break;
     expect(stream.released).toBe(true);
+    expect(stream.cancelled).toBe(true);
+  });
+
+  it('does not cancel a stream that was read to the end', async () => {
+    const FakeStream = fakeStreamClass();
+    installStreamAsyncIterator(FakeStream.prototype);
+    const stream = new FakeStream([1]);
+    for await (const chunk of stream as unknown as AsyncIterable<number>) void chunk;
+    expect(stream.cancelled).toBe(false);
   });
 
   it('leaves a native implementation untouched', () => {

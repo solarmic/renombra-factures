@@ -1,4 +1,4 @@
-import { readPhotoMeta, type PhotoMeta } from '../adapters/exifReader';
+import { ExifLoadError, readPhotoMeta, type PhotoMeta } from '../adapters/exifReader';
 import { isPhotoFile } from '../adapters/photoKind';
 import { loadPlaceIndex } from '../adapters/placesLoader';
 import type { ZipEntry } from '../adapters/zipExport';
@@ -65,6 +65,8 @@ export class PhotoState {
   exportFailed = $state(false);
   /** Incremented each time a batch of photos finishes loading (drives the dropzone flash). */
   batchDone = $state(0);
+  /** The date-reader library failed to load: ordering falls back to names and file dates. */
+  exifFailed = $state(false);
   placesStatus = $state<'idle' | 'loading' | 'ready' | 'error'>('idle');
   placeIndex = $state.raw<PlaceIndex | null>(null);
 
@@ -181,9 +183,17 @@ export class PhotoState {
   }
 
   private async readMeta(entry: PhotoEntry): Promise<void> {
-    const meta = await this.deps.readMeta(entry.file);
-    entry.moment = meta.moment;
-    entry.gps = meta.gps;
+    try {
+      const meta = await this.deps.readMeta(entry.file);
+      entry.moment = meta.moment;
+      entry.gps = meta.gps;
+    } catch (error) {
+      // A broken library affects every photo and is surfaced once; a bad single file just has no metadata.
+      if (error instanceof ExifLoadError) {
+        if (!this.exifFailed) console.error(error);
+        this.exifFailed = true;
+      }
+    }
     entry.status = 'done';
   }
 

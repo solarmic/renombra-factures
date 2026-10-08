@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { readPhotoMeta } from './exifReader';
+import { ExifLoadError, readPhotoMeta } from './exifReader';
 
 const fixture = (name: string) => new Uint8Array(readFileSync(new URL(`./__fixtures__/${name}`, import.meta.url)));
 
@@ -30,5 +30,21 @@ describe('readPhotoMeta', () => {
     }));
     expect(meta.gps).toBeNull();
     expect(meta.moment?.hh).toBe(12);
+  });
+
+  it('reports a library that failed to load, unlike a file without EXIF', async () => {
+    const failing = async () => {
+      throw new Error('chunk failed');
+    };
+    await expect(readPhotoMeta(new Uint8Array(), failing)).rejects.toBeInstanceOf(ExifLoadError);
+  });
+
+  it('keeps per-file parse errors silent', async () => {
+    const parser = async () => ({
+      parse: async () => {
+        throw new Error('corrupt file');
+      },
+    });
+    expect(await readPhotoMeta(new Uint8Array(), parser)).toEqual({ moment: null, gps: null });
   });
 });

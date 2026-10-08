@@ -26,6 +26,13 @@ describe('fetchPlaceIndex', () => {
     await expect(fetchPlaceIndex((async () => new Response('', { status: 404 })) as typeof fetch, '/x')).rejects.toThrow('404');
   });
 
+  it('rejects a corrupted dataset instead of returning shifted places', async () => {
+    const lines = dataset.split('\n');
+    lines.splice(5, 1); // a lost line would shift every later delta
+    await expect(fetchPlaceIndex((async () => new Response(lines.join('\n'))) as typeof fetch, '/x')).rejects.toThrow();
+    await expect(fetchPlaceIndex((async () => new Response(dataset.slice(0, 5000))) as typeof fetch, '/x')).rejects.toThrow();
+  });
+
   it('acceptance: resolves the bundled dataset for Menorca', async () => {
     const index = await fetchPlaceIndex(okFetch, '/places/places.txt');
     expect(nearestPlace(index, 40.0012, 3.838)?.name).toBe('Ciutadella');

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildPlaceIndex, encodePlaces, nearestPlace, parsePlaces, type Place } from './places';
+import { buildPlaceIndex, encodePlaces, nearestPlace, parsePlaces, PlacesFormatError, type Place } from './places';
 
 const PLACES: Place[] = [
   { name: 'Ciutadella', lat: 40.001, lon: 3.838 },
@@ -24,7 +24,7 @@ describe('encodePlaces / parsePlaces', () => {
 
   it('is compact: a header and one delta-coded line per place', () => {
     const lines = encodePlaces(PLACES).trimEnd().split('\n');
-    expect(lines[0]).toBe('#places v1 scale=100');
+    expect(lines[0]).toBe(`#places v1 scale=100 count=${PLACES.length}`);
     expect(lines).toHaveLength(PLACES.length + 1);
   });
 
@@ -33,13 +33,30 @@ describe('encodePlaces / parsePlaces', () => {
     expect(decoded.map((p) => p.name)).toEqual(['A B C']);
   });
 
-  it('skips malformed lines and rejects an unknown header', () => {
-    expect(parsePlaces('#places v1 scale=100\nA\t150\t-225\n\nbad\nB\tx\t2\nC\t5\t6\r\n')).toEqual([
+  it('decodes delta-coded lines, tolerating CRLF and a trailing newline', () => {
+    expect(parsePlaces('#places v1 scale=100 count=2\nA\t150\t-225\nC\t5\t6\r\n')).toEqual([
       { name: 'A', lat: 1.5, lon: -2.25 },
       { name: 'C', lat: 1.55, lon: -2.19 },
     ]);
-    expect(parsePlaces('#places v9 scale=1\nA\t1\t2')).toEqual([]);
-    expect(parsePlaces('')).toEqual([]);
+  });
+
+  it('rejects the whole dataset on any malformed line, since later deltas would shift', () => {
+    const header = '#places v1 scale=100 count=3';
+    for (const body of ['A\t150\t-225\nbad\nC\t5\t6', 'A\t150\t-225\nB\tx\t2\nC\t5\t6', 'A\t150\t-225\n\nC\t5\t6', 'A\t150\t-225\nB\t1.5\t2\nC\t5\t6']) {
+      expect(() => parsePlaces(`${header}\n${body}\n`), body).toThrow(PlacesFormatError);
+    }
+  });
+
+  it('rejects a count mismatch (truncated or padded data), an unknown header and empty input', () => {
+    expect(() => parsePlaces('#places v1 scale=100 count=3\nA\t1\t2\nB\t1\t1\n')).toThrow(PlacesFormatError);
+    expect(() => parsePlaces('#places v1 scale=100 count=1\nA\t1\t2\nB\t1\t1\n')).toThrow(PlacesFormatError);
+    expect(() => parsePlaces('#places v9 scale=1 count=1\nA\t1\t2')).toThrow(PlacesFormatError);
+    expect(() => parsePlaces('#places v1 scale=100\nA\t1\t2')).toThrow(PlacesFormatError);
+    expect(() => parsePlaces('')).toThrow(PlacesFormatError);
+  });
+
+  it('accepts an empty dataset with count=0', () => {
+    expect(parsePlaces('#places v1 scale=100 count=0\n')).toEqual([]);
   });
 });
 

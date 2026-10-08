@@ -31,12 +31,26 @@ const OPTIONS = {
   ifd1: false,
 };
 
+/** The EXIF library itself could not be loaded (as opposed to a file without readable metadata). */
+export class ExifLoadError extends Error {
+  constructor(cause: unknown) {
+    super('Could not load the EXIF reader', { cause });
+    this.name = 'ExifLoadError';
+  }
+}
+
 const EMPTY: PhotoMeta = { moment: null, gps: null };
 
-/** Never throws: unreadable or metadata-less files simply yield empty metadata. */
+/** Unreadable or metadata-less files yield empty metadata; only a library load failure throws (ExifLoadError). */
 export async function readPhotoMeta(source: Blob | Uint8Array, load: () => Promise<ExifParser> = loadExifr): Promise<PhotoMeta> {
+  let parser: ExifParser;
   try {
-    const tags = await (await load()).parse(source, OPTIONS);
+    parser = await load();
+  } catch (error) {
+    throw new ExifLoadError(error);
+  }
+  try {
+    const tags = await parser.parse(source, OPTIONS);
     if (!tags) return EMPTY;
     const { latitude, longitude } = tags;
     const hasFix =

@@ -20,15 +20,24 @@ const LON_CELLS = 360 / CELL_DEG;
 const EARTH_RADIUS_KM = 6371.0088;
 const KM_PER_DEG = (Math.PI * EARTH_RADIUS_KM) / 180;
 
-const HEADER = '#places v1 scale=100';
+const HEADER_PREFIX = '#places v1 scale=100 count=';
 const SCALE = 100;
+
+/** The bundled dataset is corrupt or truncated. */
+export class PlacesFormatError extends Error {
+  constructor(message: string) {
+    super(`Places dataset: ${message}`);
+    this.name = 'PlacesFormatError';
+  }
+}
 
 const cleanName = (name: string) => name.replace(/[\t\r\n]+/g, ' ').trim();
 
 /**
- * Compact text format of the bundled dataset: a header line, then one `name<TAB>dLat<TAB>dLon` per place,
- * sorted by latitude, with coordinates in hundredths of a degree (about 1 km) stored as deltas from the
- * previous line. Used by the build script; the browser only needs `parsePlaces`.
+ * Compact text format of the bundled dataset: a header with the number of places, then one
+ * `name<TAB>dLat<TAB>dLon` per place, sorted by latitude, with coordinates in hundredths of a degree
+ * (about 1 km) stored as deltas from the previous line. Used by the build script; the browser only needs
+ * `parsePlaces`.
  */
 export function encodePlaces(places: readonly Place[]): string {
   const rows = places
@@ -43,26 +52,38 @@ export function encodePlaces(places: readonly Place[]): string {
     lon = r.lon;
     return line;
   });
-  return `${HEADER}\n${lines.join('\n')}\n`;
+  return `${HEADER_PREFIX}${rows.length}\n${lines.length ? `${lines.join('\n')}\n` : ''}`;
 }
 
-/** Inverse of `encodePlaces`. Malformed lines are skipped; an unknown header yields no places. */
+const INTEGER = /^-?\d+$/;
+
+/**
+ * Inverse of `encodePlaces`. Lines are delta-coded, so skipping a bad line would silently shift every later
+ * place: any malformed line, unknown header or count mismatch rejects the whole dataset instead.
+ */
 export function parsePlaces(text: string): Place[] {
-  const lines = text.split('\n');
-  if ((lines[0] ?? '').replace(/\r$/, '') !== HEADER) return [];
+  const lines = text.split('\n').map((l) => l.replace(/\r$/, ''));
+  if (lines[lines.length - 1] === '') lines.pop(); // trailing newline
+  const header = lines.shift() ?? '';
+  if (!header.startsWith(HEADER_PREFIX)) throw new PlacesFormatError('unknown header');
+  const count = header.slice(HEADER_PREFIX.length);
+  if (!INTEGER.test(count) || Number(count) !== lines.length) {
+    throw new PlacesFormatError(`expected ${count} places, found ${lines.length}`);
+  }
+
   const places: Place[] = [];
   let lat = 0;
   let lon = 0;
-  for (let i = 1; i < lines.length; i++) {
-    const [name, dLat, dLon] = (lines[i] ?? '').replace(/\r$/, '').split('\t');
-    if (!name || !dLat || !dLon) continue;
-    const a = Number(dLat);
-    const b = Number(dLon);
-    if (!Number.isInteger(a) || !Number.isInteger(b)) continue;
-    lat += a;
-    lon += b;
+  lines.forEach((line, i) => {
+    const parts = line.split('\t');
+    const [name, dLat, dLon] = parts;
+    if (parts.length !== 3 || !name || !INTEGER.test(dLat!) || !INTEGER.test(dLon!)) {
+      throw new PlacesFormatError(`malformed line ${i + 2}`);
+    }
+    lat += Number(dLat);
+    lon += Number(dLon);
     places.push({ name, lat: lat / SCALE, lon: lon / SCALE });
-  }
+  });
   return places;
 }
 

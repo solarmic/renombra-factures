@@ -30,6 +30,8 @@ const es = {
   noGpsTitle: 'Fotos sin ubicación',
   noGpsBody: (n: number) =>
     n === 1 ? '1 foto no tiene GPS, así que no se le puede asignar un lugar.' : `${n} fotos no tienen GPS, así que no se les puede asignar un lugar.`,
+  exifErrorTitle: 'No se pudo cargar el lector de fechas',
+  exifErrorBody: 'No se pudo cargar el lector de fechas de las fotos; el orden puede no ser exacto. Recarga la página.',
   placesLoading: 'Cargando datos de lugares…',
   placesErrorTitle: 'No se pudieron cargar los lugares',
   placesErrorBody: 'Las fotos se renombrarán sin lugar. Comprueba tu conexión con este sitio y vuelve a intentarlo.',
@@ -129,6 +131,8 @@ const ca: FotosDict = {
   noGpsTitle: 'Fotos sense ubicació',
   noGpsBody: (n: number) =>
     n === 1 ? '1 foto no té GPS, així que no se li pot assignar un lloc.' : `${n} fotos no tenen GPS, així que no se\'ls pot assignar un lloc.`,
+  exifErrorTitle: 'No s\'ha pogut carregar el lector de dates',
+  exifErrorBody: 'No s\'ha pogut carregar el lector de dates de les fotos; l\'ordre pot no ser exacte. Torna a carregar la pàgina.',
   placesLoading: 'Carregant dades de llocs…',
   placesErrorTitle: 'No s\'han pogut carregar els llocs',
   placesErrorBody: 'Les fotos es reanomenaran sense lloc. Comprova la connexió amb aquest lloc web i torna-ho a provar.',
@@ -226,6 +230,8 @@ const en: FotosDict = {
   noGpsTitle: 'Photos without location',
   noGpsBody: (n: number) =>
     n === 1 ? '1 photo has no GPS, so it cannot be given a place.' : `${n} photos have no GPS, so they cannot be given a place.`,
+  exifErrorTitle: 'The date reader could not be loaded',
+  exifErrorBody: 'The photo date reader could not be loaded, so the order may not be exact. Reload the page.',
   placesLoading: 'Loading place data…',
   placesErrorTitle: 'Place data could not be loaded',
   placesErrorBody: 'Photos will be renamed without a place. Check your connection to this site and try again.',

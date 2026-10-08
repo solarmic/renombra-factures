@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { describe, expect, it, vi } from 'vitest';
-import type { PhotoMeta } from '../adapters/exifReader';
+import { ExifLoadError, type PhotoMeta } from '../adapters/exifReader';
 import { buildPlaceIndex } from '../domain/places';
 import { parseExifDateTime } from '../domain/photoTime';
 import { langState } from '../ui/lang.svelte';
@@ -158,5 +158,29 @@ describe('PhotoState', () => {
     expect(state.batchDone).toBe(1);
     state.clear();
     expect(state.dropMode).toBe('empty');
+  });
+
+  it('flags a date-reader library failure once and falls back to name and file date', async () => {
+    const { state } = setup({
+      readMeta: async () => {
+        throw new ExifLoadError(new Error('chunk failed'));
+      },
+    });
+    expect(state.exifFailed).toBe(false);
+    await state.addFiles([file('a.jpg'), file('IMG_0100.jpg')]);
+    expect(state.exifFailed).toBe(true);
+    expect(state.entries.every((e) => e.status === 'done')).toBe(true);
+    expect(state.rows).toHaveLength(2);
+  });
+
+  it('ignores other metadata errors per file without flagging the library', async () => {
+    const { state } = setup({
+      readMeta: async () => {
+        throw new Error('weird file');
+      },
+    });
+    await state.addFiles([file('a.jpg')]);
+    expect(state.exifFailed).toBe(false);
+    expect(state.entries[0]?.status).toBe('done');
   });
 });

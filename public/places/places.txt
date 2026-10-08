@@ -1,4 +1,4 @@
-#places v1 scale=100
+#places v1 scale=100 count=171171
 Puerto Williams	-5493	-6761
 Ushuaia	12	-71
 Tolhuin	30	112

@@ -33,6 +33,15 @@
   </section>
 {/if}
 
+{#if photos.exifFailed}
+  <section class="notice notice-warn" role="alert" aria-labelledby="exif-title">
+    <div>
+      <h2 id="exif-title">{photos.t.exifErrorTitle}</h2>
+      <p>{photos.t.exifErrorBody}</p>
+    </div>
+  </section>
+{/if}
+
 {#if photos.placesStatus === 'error'}
   <section class="notice notice-warn" role="alert" aria-labelledby="places-title">
     <div>
