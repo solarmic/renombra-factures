@@ -19,7 +19,7 @@
 
 <section class="card" aria-labelledby="table-title">
   <div class="card-head">
-    <h2 id="table-title">{photos.t.tableTitle}</h2>
+    <h2 id="table-title" tabindex="-1">{photos.t.tableTitle}</h2>
     {#if photos.entries.length > 0}
       <button type="button" class="btn btn-quiet" onclick={() => photos.clear()}>{photos.t.clear}</button>
     {/if}

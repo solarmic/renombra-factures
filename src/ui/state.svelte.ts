@@ -10,6 +10,7 @@ import { renderTemplate } from '../domain/renderTemplate';
 import { isValidReplacement, sanitizeFilename } from '../domain/sanitizeFilename';
 import type { YMD } from '../domain/types';
 import { dictionaries, type Lang } from './i18n';
+import { dropModeOf } from './dropMode';
 import { langState } from './lang.svelte';
 
 export type DateSource = 'content' | 'filename' | 'manual';
@@ -53,6 +54,8 @@ export class AppState {
   exporting = $state(false);
   /** The last export attempt failed (unreadable source file, memory, download step). */
   exportFailed = $state(false);
+  /** Incremented each time a batch of files finishes loading (drives the dropzone flash). */
+  batchDone = $state(0);
 
   t = $derived(dictionaries[this.lang]);
   hasImages = $derived(this.entries.some((e) => e.kind === 'image'));
@@ -106,6 +109,8 @@ export class AppState {
   missingDates = $derived(this.plan.missingDate);
   readyCount = $derived(this.plan.planned.length);
   reading = $derived(this.entries.some((e) => e.status === 'reading'));
+  pendingCount = $derived(this.entries.filter((e) => e.status === 'reading').length);
+  dropMode = $derived(dropModeOf(this.entries.length, this.pendingCount));
   canExport = $derived(this.readyCount > 0 && this.missingDates === 0 && !this.reading && !this.exporting);
 
   preview = $derived.by(() => {
@@ -153,6 +158,7 @@ export class AppState {
     for (const entry of tracked) {
       if (entry.kind === 'pdf') await this.readPdf(entry);
     }
+    if (added.length > 0) this.batchDone++;
   }
 
   private async readPdf(entry: Entry): Promise<void> {

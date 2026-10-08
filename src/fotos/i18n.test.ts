@@ -23,3 +23,19 @@ describe('photos dictionaries', () => {
     }
   });
 });
+
+describe('dropzone messages (photos)', () => {
+  it('pluralise the loaded title in every language', () => {
+    expect(fotosDictionaries.es.loadedTitle(1)).toBe('1 foto cargada');
+    expect(fotosDictionaries.es.loadedTitle(3)).toBe('3 fotos cargadas');
+    expect(fotosDictionaries.ca.loadedTitle(1)).toBe('1 foto carregada');
+    expect(fotosDictionaries.ca.loadedTitle(3)).toBe('3 fotos carregades');
+    expect(fotosDictionaries.en.loadedTitle(1)).toBe('1 photo loaded');
+    expect(fotosDictionaries.en.loadedTitle(3)).toBe('3 photos loaded');
+  });
+
+  it('build the reading progress and the announcement with ignored files', () => {
+    expect(fotosDictionaries.ca.readingProgress(3, 7)).toBe('Llegint 3 de 7…');
+    expect(fotosDictionaries.en.loadedStatus(2, 2)).toBe('2 photos loaded. 2 files ignored.');
+  });
+});

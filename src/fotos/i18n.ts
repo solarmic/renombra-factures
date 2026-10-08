@@ -87,6 +87,13 @@ const es = {
   credit: (year: number) => `© ${year} ${AUTHOR}`,
   attribution: 'Datos de lugares:',
   attributionLicense: '(CC BY 4.0). Lectura EXIF: exifr (MIT).',
+  loadedTitle: (n: number) => (n === 1 ? '1 foto cargada' : `${n} fotos cargadas`),
+  loadedHint: 'Puedes arrastrar más para añadirlas',
+  addMore: 'Añadir más fotos',
+  readingProgress: (done: number, total: number) => `Leyendo ${done} de ${total}…`,
+  seeResults: 'Ver resultados',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 foto cargada' : `${n} fotos cargadas`}${ignored > 0 ? `. ${ignored === 1 ? '1 archivo ignorado' : `${ignored} archivos ignorados`}.` : ''}`,
   sampleName: 'IMG_0423.jpg',
   samplePlace: 'Ciutadella',
 };
@@ -179,6 +186,13 @@ const ca: FotosDict = {
   credit: (year: number) => `© ${year} ${AUTHOR}`,
   attribution: 'Dades de llocs:',
   attributionLicense: '(CC BY 4.0). Lectura EXIF: exifr (MIT).',
+  loadedTitle: (n: number) => (n === 1 ? '1 foto carregada' : `${n} fotos carregades`),
+  loadedHint: 'Pots arrossegar-ne més per afegir-les',
+  addMore: 'Afegir més fotos',
+  readingProgress: (done: number, total: number) => `Llegint ${done} de ${total}…`,
+  seeResults: 'Veure resultats',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 foto carregada' : `${n} fotos carregades`}${ignored > 0 ? `. ${ignored === 1 ? '1 arxiu ignorat' : `${ignored} arxius ignorats`}.` : ''}`,
   sampleName: 'IMG_0423.jpg',
   samplePlace: 'Ciutadella',
 };
@@ -269,6 +283,13 @@ const en: FotosDict = {
   credit: (year: number) => `© ${year} ${AUTHOR}`,
   attribution: 'Place data:',
   attributionLicense: '(CC BY 4.0). EXIF reading: exifr (MIT).',
+  loadedTitle: (n: number) => (n === 1 ? '1 photo loaded' : `${n} photos loaded`),
+  loadedHint: 'Drop more to add them',
+  addMore: 'Add more photos',
+  readingProgress: (done: number, total: number) => `Reading ${done} of ${total}…`,
+  seeResults: 'See results',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 photo loaded' : `${n} photos loaded`}${ignored > 0 ? `. ${ignored === 1 ? '1 file ignored' : `${ignored} files ignored`}.` : ''}`,
   sampleName: 'IMG_0423.jpg',
   samplePlace: 'Ciutadella',
 };

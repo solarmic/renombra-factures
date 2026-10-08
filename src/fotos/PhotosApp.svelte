@@ -58,6 +58,15 @@
       hint={photos.t.dropHint}
       button={photos.t.dropButton}
       activeTitle={photos.t.dropActive}
+      mode={photos.dropMode}
+      batch={photos.batchDone}
+      loadedTitle={photos.t.loadedTitle(photos.entries.length)}
+      loadedHint={photos.t.loadedHint}
+      addMore={photos.t.addMore}
+      readingText={photos.t.readingProgress(photos.entries.length - photos.pendingCount, photos.entries.length)}
+      seeResults={photos.t.seeResults}
+      status={photos.dropMode === 'loaded' ? photos.t.loadedStatus(photos.entries.length, photos.ignored.length) : ''}
+      resultsId="table-title"
     />
     <PhotoSettings />
     <PhotoTable />

@@ -96,4 +96,17 @@ describe('AppState', () => {
     expect(app.replacementValid).toBe(false);
     expect(app.preview).not.toContain('/');
   });
+
+  it('derives the dropzone mode and counts finished batches', async () => {
+    const app = new AppState();
+    expect(app.dropMode).toBe('empty');
+    expect(app.batchDone).toBe(0);
+    await app.addFiles([file('2026-01-05 Factura.jpg', 'image/jpeg')]);
+    expect(app.dropMode).toBe('loaded');
+    expect(app.batchDone).toBe(1);
+    await app.addFiles([file('a.xlsx')]);
+    expect(app.batchDone).toBe(1); // nothing was added
+    app.clear();
+    expect(app.dropMode).toBe('empty');
+  });
 });

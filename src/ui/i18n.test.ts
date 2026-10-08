@@ -34,3 +34,22 @@ describe('dictionaries', () => {
     }
   });
 });
+
+describe('dropzone messages (invoices)', () => {
+  it('pluralise the loaded title in every language', () => {
+    expect(dictionaries.es.loadedTitle(1)).toBe('1 factura cargada');
+    expect(dictionaries.es.loadedTitle(3)).toBe('3 facturas cargadas');
+    expect(dictionaries.ca.loadedTitle(1)).toBe('1 factura carregada');
+    expect(dictionaries.ca.loadedTitle(3)).toBe('3 factures carregades');
+    expect(dictionaries.en.loadedTitle(1)).toBe('1 invoice loaded');
+    expect(dictionaries.en.loadedTitle(3)).toBe('3 invoices loaded');
+  });
+
+  it('build the reading progress and the announcement with ignored files', () => {
+    expect(dictionaries.es.readingProgress(3, 7)).toBe('Leyendo 3 de 7…');
+    expect(dictionaries.en.loadedStatus(2, 0)).toBe('2 invoices loaded');
+    expect(dictionaries.en.loadedStatus(2, 1)).toBe('2 invoices loaded. 1 file ignored.');
+    expect(dictionaries.ca.loadedStatus(1, 2)).toBe('1 factura carregada. 2 arxius ignorats.');
+    expect(dictionaries.es.loadedStatus(1, 1)).toBe('1 factura cargada. 1 archivo ignorado.');
+  });
+});

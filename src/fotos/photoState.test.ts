@@ -143,4 +143,20 @@ describe('PhotoState', () => {
     state.replacement = '/';
     expect(state.replacementValid).toBe(false);
   });
+
+  it('derives the dropzone mode, pending count and finished batches', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    const { state } = setup({ readMeta: async () => (await gate, { moment: null, gps: null }) });
+    expect(state.dropMode).toBe('empty');
+    const adding = state.addFiles([file('a.jpg'), file('b.jpg')]);
+    expect(state.dropMode).toBe('reading');
+    expect(state.pendingCount).toBe(2);
+    release();
+    await adding;
+    expect(state.dropMode).toBe('loaded');
+    expect(state.batchDone).toBe(1);
+    state.clear();
+    expect(state.dropMode).toBe('empty');
+  });
 });

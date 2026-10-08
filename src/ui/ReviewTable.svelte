@@ -14,7 +14,7 @@
 
 <section class="card" aria-labelledby="table-title">
   <div class="card-head">
-    <h2 id="table-title">{app.t.tableTitle}</h2>
+    <h2 id="table-title" tabindex="-1">{app.t.tableTitle}</h2>
     {#if app.entries.length > 0}
       <button type="button" class="btn btn-quiet" onclick={() => app.clear()}>{app.t.clear}</button>
     {/if}

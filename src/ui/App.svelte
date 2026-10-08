@@ -43,6 +43,15 @@
       hint={app.t.dropHint}
       button={app.t.dropButton}
       activeTitle={app.t.dropActive}
+      mode={app.dropMode}
+      batch={app.batchDone}
+      loadedTitle={app.t.loadedTitle(app.entries.length)}
+      loadedHint={app.t.loadedHint}
+      addMore={app.t.addMore}
+      readingText={app.t.readingProgress(app.entries.length - app.pendingCount, app.entries.length)}
+      seeResults={app.t.seeResults}
+      status={app.dropMode === 'loaded' ? app.t.loadedStatus(app.entries.length, app.ignored.length) : ''}
+      resultsId="table-title"
     />
     <Settings />
     <ReviewTable />

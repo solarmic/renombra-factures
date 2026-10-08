@@ -74,6 +74,13 @@ const es = {
   donate: 'Invítame a un café',
   donateHint: 'Gratis y sin anuncios. Si te ha ahorrado tiempo, puedes apoyarlo.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,
+  loadedTitle: (n: number) => (n === 1 ? '1 factura cargada' : `${n} facturas cargadas`),
+  loadedHint: 'Puedes arrastrar más para añadirlas',
+  addMore: 'Añadir más facturas',
+  readingProgress: (done: number, total: number) => `Leyendo ${done} de ${total}…`,
+  seeResults: 'Ver resultados',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 factura cargada' : `${n} facturas cargadas`}${ignored > 0 ? `. ${ignored === 1 ? '1 archivo ignorado' : `${ignored} archivos ignorados`}.` : ''}`,
   sampleName: 'Factura ejemplo.pdf',
 };
 
@@ -150,6 +157,13 @@ const ca: Dict = {
   donate: 'Convida\'m a un cafè',
   donateHint: 'Gratuït i sense anuncis. Si t\'ha estalviat temps, pots donar-li suport.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,
+  loadedTitle: (n: number) => (n === 1 ? '1 factura carregada' : `${n} factures carregades`),
+  loadedHint: 'Pots arrossegar-ne més per afegir-les',
+  addMore: 'Afegir més factures',
+  readingProgress: (done: number, total: number) => `Llegint ${done} de ${total}…`,
+  seeResults: 'Veure resultats',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 factura carregada' : `${n} factures carregades`}${ignored > 0 ? `. ${ignored === 1 ? '1 arxiu ignorat' : `${ignored} arxius ignorats`}.` : ''}`,
   sampleName: 'Factura exemple.pdf',
 };
 
@@ -224,6 +238,13 @@ const en: Dict = {
   donate: 'Buy me a coffee',
   donateHint: 'Free and ad-free. If it saved you time, you can support it.',
   credit: (year: number) => `© ${year} ${AUTHOR}`,
+  loadedTitle: (n: number) => (n === 1 ? '1 invoice loaded' : `${n} invoices loaded`),
+  loadedHint: 'Drop more to add them',
+  addMore: 'Add more invoices',
+  readingProgress: (done: number, total: number) => `Reading ${done} of ${total}…`,
+  seeResults: 'See results',
+  loadedStatus: (n: number, ignored: number) =>
+    `${n === 1 ? '1 invoice loaded' : `${n} invoices loaded`}${ignored > 0 ? `. ${ignored === 1 ? '1 file ignored' : `${ignored} files ignored`}.` : ''}`,
   sampleName: 'Sample invoice.pdf',
 };
 

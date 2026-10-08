@@ -9,6 +9,7 @@ import { nearestPlace, type PlaceIndex } from '../domain/places';
 import { photoSortKey, type PhotoKey } from '../domain/photoSortKey';
 import { parseExifDateTime, type PhotoMoment } from '../domain/photoTime';
 import { isValidReplacement } from '../domain/sanitizeFilename';
+import { dropModeOf } from '../ui/dropMode';
 import { langState } from '../ui/lang.svelte';
 import { fotosDictionaries } from './i18n';
 
@@ -62,6 +63,8 @@ export class PhotoState {
   ignored = $state<string[]>([]);
   exporting = $state(false);
   exportFailed = $state(false);
+  /** Incremented each time a batch of photos finishes loading (drives the dropzone flash). */
+  batchDone = $state(0);
   placesStatus = $state<'idle' | 'loading' | 'ready' | 'error'>('idle');
   placeIndex = $state.raw<PlaceIndex | null>(null);
 
@@ -119,6 +122,8 @@ export class PhotoState {
 
   readyCount = $derived(this.plan.planned.length);
   reading = $derived(this.entries.some((e) => e.status === 'reading'));
+  pendingCount = $derived(this.entries.filter((e) => e.status === 'reading').length);
+  dropMode = $derived(dropModeOf(this.entries.length, this.pendingCount));
   canExport = $derived(this.readyCount > 0 && !this.reading && !this.exporting);
 
   /** Photos ordered by name counter or file date because they carry no capture moment. */
@@ -172,6 +177,7 @@ export class PhotoState {
     };
     await Promise.all(Array.from({ length: Math.min(READ_CONCURRENCY, tracked.length) }, worker));
     await this.syncPlaces();
+    if (added.length > 0) this.batchDone++;
   }
 
   private async readMeta(entry: PhotoEntry): Promise<void> {

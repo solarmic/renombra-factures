@@ -923,3 +923,53 @@ label {
 .site-link:hover .site-link-go {
   border-bottom-color: currentcolor;
 }
+
+/* Dropzone: loaded state, reading state and the success flash after each batch */
+.drop-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.dropzone .drop-actions .btn {
+  margin-top: 0;
+}
+
+.dropzone.loaded {
+  border-style: solid;
+  border-color: var(--ok);
+}
+
+.dropzone.loaded .drop-icon-ok {
+  color: var(--ok);
+  filter: none;
+}
+
+.dropzone.reading .drop-title {
+  color: var(--muted);
+}
+
+.dropzone.flash {
+  animation: drop-flash 1.4s ease-out;
+}
+
+@keyframes drop-flash {
+  0% {
+    background: var(--ok-bg);
+    box-shadow: 0 0 0 3px var(--ok), 0 0 32px var(--ok);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent, 0 0 0 transparent;
+  }
+}
+
+h2[tabindex='-1']:focus {
+  outline: none;
+}
+
+h2[tabindex='-1']:focus-visible {
+  outline: 3px solid var(--focus);
+}
